@@ -1,8 +1,8 @@
 {
   "name": "territory-card-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "구역카드시스템 API",
+  "author": "최동호",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
