@@ -1,5 +1,6 @@
-import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import configuration from './config/configuration';
+import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -28,16 +29,17 @@ import { TerritoryRecordContents } from './records/entities/territory-record-con
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
-      ignoreEnvFile: process.env.NODE_ENV === 'prod',
+      load: [configuration],
+      envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.prod',
       validationSchema: Joi.object({
-        NODE_ENV: Joi.string().valid('dev', 'prod').required(),
+        NODE_ENV: Joi.string().valid('dev', 'prod').required().default('dev'),
         DB_HOST: Joi.string().required(),
         DB_PORT: Joi.string().required(),
         DB_USER: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
-      })
+        PORT: Joi.number().default(3000),
+      }),
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -60,7 +62,7 @@ import { TerritoryRecordContents } from './records/entities/territory-record-con
         CardRecords,
         CardMarks,
         TerritoryRecords,
-        TerritoryRecordContents
+        TerritoryRecordContents,
       ],
       logging: true,
       synchronize: true, // Be careful ㅜㅜㅜ 그치만 신기해
