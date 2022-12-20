@@ -4,26 +4,26 @@ import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MembersModule } from './members/members.module';
+import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Members } from './members/entities/members.entity';
-import { Accesses } from './auth/entities/accesses.entity';
-import { CardsModule } from './cards/cards.module';
-import { RecordsModule } from './records/records.module';
+import { User } from './user/entities/user.entity';
+import { Access } from './auth/entities/access.entity';
+import { CardModule } from './card/card.module';
+import { RecordModule } from './record/record.module';
 import { AssignModule } from './assign/assign.module';
-import { Cards } from './cards/entities/cards.entity';
-import { CardContents } from './cards/entities/card-contents.entity';
-import { CardTags } from './cards/entities/card-tags.entity';
-import { CardsBackup } from './cards/entities/cards-backup.entity';
-import { CardContentsBackup } from './cards/entities/card-contents-backup.entity';
-import { CardTagsBackup } from './cards/entities/card-tags-backup.entity';
-import { CardsAssigned } from './assign/entities/cards_assigned.entity';
-import { CrewsAssigned } from './assign/entities/crews_assigned.entity';
-import { CardRecords } from './records/entities/card-records.entity';
-import { CardMarks } from './records/entities/card-marks.entity';
-import { TerritoryRecords } from './records/entities/territory-records.entity';
-import { TerritoryRecordContents } from './records/entities/territory-record-contents.entity';
+import { Card } from './card/entities/card.entity';
+import { CardContent } from './card/entities/card-content.entity';
+import { CardTag } from './card/entities/card-tag.entity';
+import { CardBackup } from './card/entities/card-backup.entity';
+import { CardContentBackup } from './card/entities/card-content-backup.entity';
+import { CardTagBackup } from './card/entities/card-tag-backup.entity';
+import { CardAssigned } from './assign/entities/card_assigned.entity';
+import { CrewAssigned } from './assign/entities/crew_assigned.entity';
+import { CardRecord } from './record/entities/card-record.entity';
+import { CardMark } from './record/entities/card-mark.entity';
+import { TerritoryRecord } from './record/entities/territory-record.entity';
+import { TerritoryRecordContent } from './record/entities/territory-record-content.entity';
 
 @Module({
   imports: [
@@ -49,28 +49,28 @@ import { TerritoryRecordContents } from './records/entities/territory-record-con
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       entities: [
-        Members,
-        Accesses,
-        Cards,
-        CardContents,
-        CardTags,
-        CardsBackup,
-        CardContentsBackup,
-        CardTagsBackup,
-        CardsAssigned,
-        CrewsAssigned,
-        CardRecords,
-        CardMarks,
-        TerritoryRecords,
-        TerritoryRecordContents,
+        User,
+        Access,
+        Card,
+        CardContent,
+        CardTag,
+        CardBackup,
+        CardContentBackup,
+        CardTagBackup,
+        CardAssigned,
+        CrewAssigned,
+        CardRecord,
+        CardMark,
+        TerritoryRecord,
+        TerritoryRecordContent,
       ],
       logging: true,
       synchronize: true, // Be careful ㅜㅜㅜ 그치만 신기해
     }),
     AuthModule,
-    MembersModule,
-    CardsModule,
-    RecordsModule,
+    UserModule,
+    CardModule,
+    RecordModule,
     AssignModule,
   ],
   controllers: [AppController], // express.router
