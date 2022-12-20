@@ -1,5 +1,5 @@
-import { CardAssigned } from 'src/assign/entities/card_assigned.entity';
-import { CrewAssigned } from 'src/assign/entities/crew_assigned.entity';
+import { CardAssigned } from 'src/assign/entities/card-assigned.entity';
+import { CrewAssigned } from 'src/assign/entities/crew-assigned.entity';
 import { CardContent } from 'src/card/entities/card-content.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
