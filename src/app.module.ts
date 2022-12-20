@@ -18,12 +18,13 @@ import { CardTag } from './card/entities/card-tag.entity';
 import { CardBackup } from './card/entities/card-backup.entity';
 import { CardContentBackup } from './card/entities/card-content-backup.entity';
 import { CardTagBackup } from './card/entities/card-tag-backup.entity';
-import { CardAssigned } from './assign/entities/card_assigned.entity';
-import { CrewAssigned } from './assign/entities/crew_assigned.entity';
+import { CardAssigned } from './assign/entities/card-assigned.entity';
+import { CrewAssigned } from './assign/entities/crew-assigned.entity';
 import { CardRecord } from './record/entities/card-record.entity';
 import { CardMark } from './record/entities/card-mark.entity';
 import { TerritoryRecord } from './record/entities/territory-record.entity';
 import { TerritoryRecordContent } from './record/entities/territory-record-content.entity';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { TerritoryRecordContent } from './record/entities/territory-record-conte
     CardModule,
     RecordModule,
     AssignModule,
+    FileModule,
   ],
   controllers: [AppController], // express.router
   providers: [AppService],
