@@ -6,7 +6,7 @@ export class CardBackup {
   idx: number;
 
   @Column({ type: 'int', comment: 'cards.idx' })
-  cIdx: number;
+  cardIdx: number;
 
   @Column({ type: 'varchar', length: 200, comment: 'cards.name' })
   name: string;

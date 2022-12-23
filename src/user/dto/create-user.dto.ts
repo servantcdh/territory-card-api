@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateMemberDto {
   @IsString()
@@ -7,29 +7,25 @@ export class CreateMemberDto {
   @IsString()
   password: string;
 
-  @IsNumber()
-  gender: number;
+  @IsBoolean()
+  gender: boolean;
 
-  @IsNumber()
-  guide: number;
+  @IsBoolean()
+  guide: boolean;
 
-  @IsNumber()
-  auth: number;
+  @IsBoolean()
+  auth: boolean;
 
-  @IsNumber()
-  baptize: number;
+  @IsBoolean()
+  baptize: boolean;
 
-  @IsNumber()
-  car: number;
+  @IsBoolean()
+  car: boolean;
 
   @IsOptional()
   @IsString()
   profile?: string;
 
-  @IsOptional()
-  @IsString()
-  refreshToken?: string;
-
-  @IsNumber()
-  status: number;
+  @IsBoolean()
+  status: boolean;
 }

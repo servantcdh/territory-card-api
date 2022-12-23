@@ -16,9 +16,6 @@ export class CardRecord {
   @ManyToOne(() => CardContent, (content) => content.idx)
   content: CardContent;
 
-  @ManyToOne(() => CrewAssigned, (crew) => crew.user)
-  user: User;
-
   @ManyToOne(() => CardMark, (cardMark) => cardMark.mark)
   cardMark: CardMark;
 }

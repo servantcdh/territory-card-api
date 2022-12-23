@@ -65,7 +65,7 @@ import { FileModule } from './file/file.module';
         TerritoryRecord,
         TerritoryRecordContent,
       ],
-      logging: true,
+      logging: false,
       synchronize: true, // Be careful ㅜㅜㅜ 그치만 신기해
     }),
     AuthModule,

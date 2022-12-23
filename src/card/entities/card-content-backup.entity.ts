@@ -6,10 +6,10 @@ export class CardContentBackup {
   idx: number;
 
   @Column({ type: 'int', comment: 'card_contents.idx' })
-  ccIdx: number;
+  cardContentIdx: number;
 
-  @Column({ type: 'int', comment: 'card_contents.cIdx' })
-  cIdx: number;
+  @Column({ type: 'int', comment: 'card_contents.cardIdx' })
+  cardIdx: number;
 
   @Column({ type: 'varchar', length: 150, comment: 'card_contents.street' })
   street: string;
