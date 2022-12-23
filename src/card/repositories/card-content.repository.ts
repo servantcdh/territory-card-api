@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CreateCardContentDto } from '../dto/create-card-content.dto';
 import { CardContent } from '../entities/card-content.entity';
@@ -10,28 +10,34 @@ export class CardContentRepository extends Repository<CardContent> {
   }
 
   getMany(cardIdx: number): Promise<CardContent[]> {
-    return this.dataSource.createQueryBuilder()
-    .select()
-    .from(CardContent, 'cc')
-    .where('cc.cardIdx = :cardIdx', { cardIdx })
-    .execute();
+    return this.dataSource
+      .createQueryBuilder()
+      .select()
+      .from(CardContent, 'cc')
+      .where('cc.cardIdx = :cardIdx', { cardIdx })
+      .execute();
   }
 
   async createCardContent(cardContentDto: CreateCardContentDto[]) {
-    const { identifiers } = await this.dataSource.createQueryBuilder()
-    .insert()
-    .into(CardContent)
-    .values(cardContentDto.map(dto => ({ ...dto, status: true })))
-    .execute();
-    return identifiers.map(r => r.idx);
+    try {
+      const { identifiers } = await this.dataSource
+        .createQueryBuilder()
+        .insert()
+        .into(CardContent)
+        .values(cardContentDto.map((dto) => ({ ...dto, status: true })))
+        .execute();
+      return identifiers.map((r) => r.idx);
+    } catch (e) {
+      throw new ForbiddenException(e.sqlMessage);
+    }
   }
 
   deleteCardContent(cardIdx: number) {
-    return this.dataSource.createQueryBuilder()
-    .delete()
-    .from(CardContent)
-    .where('cardIdx = :cardIdx', { cardIdx })
-    .execute();
+    return this.dataSource
+      .createQueryBuilder()
+      .delete()
+      .from(CardContent)
+      .where('cardIdx = :cardIdx', { cardIdx })
+      .execute();
   }
-
 }
