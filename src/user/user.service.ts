@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { UserRepository } from './repositories/user.repository';
 import { hashSync } from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -22,5 +23,9 @@ export class UserService {
     dto.password = hashSync(dto.password, 10);
     const idx = await this.userRepository.createUser(dto);
     return { idx };
+  }
+
+  updateUser(dto: UpdateUserDto) {
+    return this.userRepository.updateUser(dto);
   }
 }

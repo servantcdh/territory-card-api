@@ -40,12 +40,12 @@ export class UserRepository extends Repository<User> {
 
   async updateUser(userDto: UpdateUserDto) {
     try {
-      const { user, ...dto } = userDto;
+      const { userIdx, ...dto } = userDto;
       const { affected } = await this.dataSource
         .createQueryBuilder()
         .update(User)
         .set(dto)
-        .where('idx = :idx', { idx: user.idx })
+        .where('idx = :idx', { idx: userIdx })
         .execute();
       return affected;
     } catch (e) {
