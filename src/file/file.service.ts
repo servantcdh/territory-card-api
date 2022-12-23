@@ -34,7 +34,12 @@ export class FileService {
    **/
 
   getCardForm(res: Response) {
-    getCardForm(res);
+    try {
+      getCardForm(res);
+    } catch (e) {
+      const statusCode = HttpStatus.BAD_REQUEST;
+      return res.status(statusCode).json({ statusCode, message: e.message });
+    }
   }
 
   async getCard(res: Response, cardIdx: number) {
@@ -43,8 +48,7 @@ export class FileService {
     if (!card) {
       const statusCode = HttpStatus.NOT_FOUND;
       const message = `없는 구역 번호: ${cardIdx}`;
-      res.status(statusCode).json({ statusCode, message });
-      throw new NotFoundException(message);
+      return res.status(statusCode).json({ statusCode, message });
     }
     // 2. CardContent 조회
     const cardContent = await this.cardContentRepository.getMany(card.idx);
@@ -55,6 +59,10 @@ export class FileService {
   }
 
   async parseAndCreateCard(file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('엑셀 파일이 업로드되지 않음')
+    }
+
     let { card, createCard, updateCard, createCardTag, createCardContent } =
       await readCardForm(file);
 

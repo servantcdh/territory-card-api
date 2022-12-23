@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CardAssigned } from 'src/assign/entities/card-assigned.entity';
 import { CardAssignedRepository } from 'src/assign/repositories/card-assigned.repository';
+import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { CardBackup } from 'src/card/entities/card-backup.entity';
 import { CardContentBackup } from 'src/card/entities/card-content-backup.entity';
 import { CardContent } from 'src/card/entities/card-content.entity';
@@ -31,6 +32,7 @@ import { FileService } from './file.service';
   ],
   controllers: [FileController],
   providers: [
+    JwtStrategy,
     FileService,
     CardRepository,
     CardContentRepository,
