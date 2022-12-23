@@ -1,4 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateMemberDto } from './create-user.dto';
+import { User } from '../entities/user.entity';
+import { CreateUserDto } from './create-user.dto';
 
-export class UpdateMemberDto extends PartialType(CreateMemberDto) {}
+export class UpdateUserDto extends PartialType(CreateUserDto) {
+  user: User;
+}

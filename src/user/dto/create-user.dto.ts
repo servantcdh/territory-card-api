@@ -1,6 +1,6 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
-export class CreateMemberDto {
+export class CreateUserDto {
   @IsString()
   name: string;
 

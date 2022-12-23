@@ -40,6 +40,7 @@ import { FileModule } from './file/file.module';
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
         PORT: Joi.number().default(3000),
+        JWT_SECRET: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
