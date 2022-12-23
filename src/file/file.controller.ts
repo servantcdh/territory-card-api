@@ -19,9 +19,8 @@ export class FileController {
 
   @Post('card')
   @UseInterceptors(FileInterceptor('excel'))
-  async uploadCardByExcel(@UploadedFile() file: Express.Multer.File) {
-    const cardIdx = await this.fileService.parseAndCreateCard(file);
-    return cardIdx;
+  uploadCardByExcel(@UploadedFile() file: Express.Multer.File) {
+    return this.fileService.parseAndCreateCard(file);
   }
 
 }
