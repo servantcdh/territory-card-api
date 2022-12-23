@@ -26,6 +26,7 @@ export class UserService {
   }
 
   updateUser(dto: UpdateUserDto) {
+    dto.password = hashSync(dto.password, 10);
     return this.userRepository.updateUser(dto);
   }
 }
