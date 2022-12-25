@@ -5,9 +5,11 @@ import { CreateCardTagDto } from 'src/card/dto/create-card-tag.dto';
 import { UpdateCardDto } from 'src/card/dto/update-card.dto';
 import { Card } from 'src/card/entities/card.entity';
 
-const REGEX_HASHTAG = /(#+[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9(_)]{1,})/;
+export const REGEX_HASHTAG = /(#+[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9(_)]{1,})/;
 
-export const readCardForm = async (file: Express.Multer.File): Promise<ReadCardFromExcel> => {
+export const readCardForm = async (
+  file: Express.Multer.File,
+): Promise<ReadCardFromExcel> => {
   const wb = new ExcelJS.Workbook();
   const workbook = await wb.xlsx.load(file.buffer);
   const worksheet = workbook.getWorksheet(1);
@@ -19,20 +21,19 @@ export const readCardForm = async (file: Express.Multer.File): Promise<ReadCardF
   const status = true;
   const createCard: CreateCardDto = { name, memo };
   const updateCard: UpdateCardDto = { idx, status, ...createCard };
+  const card: Card = { ...createCard, idx, status };
 
   // CardTag Dto Data
-  const card: Card = { ...createCard, idx, status };
-  const tags = worksheet
-    .getCell('B4')
-    .value.toString()
+  const tags = memo
     .split(' ')
-    .filter((word) => REGEX_HASHTAG.test(word));
-  const createCardTag: CreateCardTagDto[] = tags.map((tag) => ({ card, tag }));
+    .filter((word) => REGEX_HASHTAG.test(word))
+    .map((word) => word.substring(word.indexOf('#')));
+  const createCardTag: CreateCardTagDto[] = tags.map((tag) => ({ tag }));
 
   // CardContent Dto Data
   const createCardContent: CreateCardContentDto[] = [];
   worksheet.eachRow((row, number) => {
-    if (number > 5) {
+    if (number > 4) {
       const street = row.getCell(1).toString();
       const building = row.getCell(2).toString();
       const name = row.getCell(3).toString();

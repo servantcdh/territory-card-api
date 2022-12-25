@@ -1,4 +1,5 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { REGEX_HASHTAG } from 'src/file/forms/read-card-form';
 import { DataSource, Repository } from 'typeorm';
 import { CreateCardTagDto } from '../dto/create-card-tag.dto';
 import { CardTag } from '../entities/card-tag.entity';
@@ -9,12 +10,11 @@ export class CardTagRepository extends Repository<CardTag> {
     super(CardTag, dataSource.createEntityManager());
   }
 
-  getMany(cardIdx: number): Promise<CardTag[]> {
+  getMany(): Promise<CardTag[]> {
     return this.dataSource
       .createQueryBuilder()
       .select()
       .from(CardTag, 'ct')
-      .where('ct.cardIdx = :cardIdx', { cardIdx })
       .execute();
   }
 
@@ -28,16 +28,24 @@ export class CardTagRepository extends Repository<CardTag> {
         .execute();
       return identifiers.map((r) => r.idx);
     } catch (e) {
-      throw new ForbiddenException(e.sqlMessage);
+      const message = e.sqlMessage as string;
+      if (message.includes('Duplicate')) {
+        const duplicatedTag = message
+          .split(' ')
+          .filter((word) => REGEX_HASHTAG.test(word))
+          .map((word) => word.substring(word.indexOf('#')).replace("'", ''))[0];
+        const filtered = cardTagDto.filter((dto) => dto.tag !== duplicatedTag);
+        return this.createCardTag(filtered);
+      }
     }
   }
 
-  deleteCardTag(cardIdx: number) {
+  deleteCardTag(tag: string) {
     return this.dataSource
       .createQueryBuilder()
       .delete()
       .from(CardTag)
-      .where('cardIdx = :cardIdx', { cardIdx })
+      .where('tag = :tag', { tag })
       .execute();
   }
 }

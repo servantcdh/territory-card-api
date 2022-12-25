@@ -17,7 +17,6 @@ import { CardContent } from './card/entities/card-content.entity';
 import { CardTag } from './card/entities/card-tag.entity';
 import { CardBackup } from './card/entities/card-backup.entity';
 import { CardContentBackup } from './card/entities/card-content-backup.entity';
-import { CardTagBackup } from './card/entities/card-tag-backup.entity';
 import { CardAssigned } from './assign/entities/card-assigned.entity';
 import { CrewAssigned } from './assign/entities/crew-assigned.entity';
 import { CardRecord } from './record/entities/card-record.entity';
@@ -58,7 +57,6 @@ import { FileModule } from './file/file.module';
         CardTag,
         CardBackup,
         CardContentBackup,
-        CardTagBackup,
         CardAssigned,
         CrewAssigned,
         CardRecord,

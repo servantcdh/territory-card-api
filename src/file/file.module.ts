@@ -6,13 +6,11 @@ import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { CardBackup } from 'src/card/entities/card-backup.entity';
 import { CardContentBackup } from 'src/card/entities/card-content-backup.entity';
 import { CardContent } from 'src/card/entities/card-content.entity';
-import { CardTagBackup } from 'src/card/entities/card-tag-backup.entity';
 import { CardTag } from 'src/card/entities/card-tag.entity';
 import { Card } from 'src/card/entities/card.entity';
 import { CardBackupRepository } from 'src/card/repositories/card-backup.repository';
 import { CardContentBackupRepository } from 'src/card/repositories/card-content-backup.repository';
 import { CardContentRepository } from 'src/card/repositories/card-content.repository';
-import { CardTagBackupRepository } from 'src/card/repositories/card-tag-backup.repository';
 import { CardTagRepository } from 'src/card/repositories/card-tag.repository';
 import { CardRepository } from 'src/card/repositories/card.repository';
 import { FileController } from './file.controller';
@@ -26,8 +24,7 @@ import { FileService } from './file.service';
       CardTag,
       CardAssigned,
       CardBackup,
-      CardContentBackup,
-      CardTagBackup,
+      CardContentBackup
     ]),
   ],
   controllers: [FileController],
@@ -39,8 +36,7 @@ import { FileService } from './file.service';
     CardTagRepository,
     CardAssignedRepository,
     CardBackupRepository,
-    CardContentBackupRepository,
-    CardTagBackupRepository
+    CardContentBackupRepository
   ],
 })
 export class FileModule {}

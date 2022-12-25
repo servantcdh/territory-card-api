@@ -1,17 +1,14 @@
-import {
-  BadRequestException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { CardAssignedRepository } from 'src/assign/repositories/card-assigned.repository';
+import { GetCardDto } from 'src/card/dto/get-card.dto';
+import { CardTag } from 'src/card/entities/card-tag.entity';
 import { CardBackupRepository } from 'src/card/repositories/card-backup.repository';
 import { CardContentBackupRepository } from 'src/card/repositories/card-content-backup.repository';
 import { CardContentRepository } from 'src/card/repositories/card-content.repository';
-import { CardTagBackupRepository } from 'src/card/repositories/card-tag-backup.repository';
 import { CardTagRepository } from 'src/card/repositories/card-tag.repository';
 import { CardRepository } from 'src/card/repositories/card.repository';
+import { PageRequestDto } from 'src/shared/dto/page-request.dto';
 import { getCardForm } from './forms/get-card-form';
 import { readCardForm } from './forms/read-card-form';
 import { checkDto } from './validators/check-validation';
@@ -25,7 +22,6 @@ export class FileService {
     private readonly cardAssignedRepository: CardAssignedRepository,
     private readonly cardBackupRepository: CardBackupRepository,
     private readonly cardContentBackupRepository: CardContentBackupRepository,
-    private readonly cardTagBackupRepository: CardTagBackupRepository,
   ) {}
 
   /**
@@ -52,15 +48,13 @@ export class FileService {
     }
     // 2. CardContent 조회
     const cardContent = await this.cardContentRepository.getMany(card.idx);
-    // 3. CardTag 조회
-    const cardTag = await this.cardTagRepository.getMany(card.idx);
-    // 4. Excel 작성 및 응답
-    getCardForm(res, [card, cardContent, cardTag]);
+    // 3. Excel 작성 및 응답
+    getCardForm(res, [card, cardContent]);
   }
 
   async parseAndCreateCard(file: Express.Multer.File) {
     if (!file) {
-      throw new BadRequestException('엑셀 파일이 업로드되지 않음')
+      throw new BadRequestException('엑셀 파일이 업로드되지 않음');
     }
 
     let { card, createCard, updateCard, createCardTag, createCardContent } =
@@ -73,12 +67,7 @@ export class FileService {
     if (!card.idx) {
       // 1. 신규 카드 생성 > card entity 반환
       card.idx = await this.cardRepository.createCard(createCard);
-      createCardTag = createCardTag.map((dto) => ({ ...dto, card }));
       createCardContent = createCardContent.map((dto) => ({ ...dto, card }));
-      // 2. 카드 내용/태그 생성
-      this.cardContentRepository.createCardContent(createCardContent);
-      this.cardTagRepository.createCardTag(createCardTag);
-      return card;
     } else {
       // 1. CardAssigned 조회 >> 할당 및 미반납 카드일 경우 예외 처리
       const cardAssigned = await this.cardAssignedRepository.getOne(card.idx);
@@ -106,17 +95,7 @@ export class FileService {
         );
       }
       this.cardContentRepository.deleteCardContent(card.idx);
-      // 3. 기존 CardTag 내용을 캐싱 테이블로 이관 및 삭제
-      await this.cardTagBackupRepository.deleteCardTagBackup(card.idx);
-      const cachingCardTag = await this.cardTagRepository.getMany(card.idx);
-      const applied_ct = await this.cardTagBackupRepository.createCardTagBackup(
-        cachingCardTag,
-      );
-      if (!applied_ct.length) {
-        throw new BadRequestException(`CardTag 캐싱 실패: cardIdx ${card.idx}`);
-      }
-      this.cardTagRepository.deleteCardTag(card.idx);
-      // 4. 기존 Card 내용을 캐싱 테이블로 이관
+      // 3. 기존 Card 내용을 캐싱 테이블로 이관
       await this.cardBackupRepository.deleteCardBackup(card.idx);
       const cachingCard = await this.cardRepository.getOne(card.idx);
       const cardBackup = { ...cachingCard, cardIdx: cachingCard.idx };
@@ -126,11 +105,21 @@ export class FileService {
       if (!applied_c.length) {
         throw new BadRequestException(`Card 캐싱 실패: cardIdx ${card.idx}`);
       }
-      // 5. 수정된 내용으로 업데이트
+      // 4. 수정된 내용으로 업데이트
       await this.cardRepository.updateCard(updateCard);
-      this.cardContentRepository.createCardContent(createCardContent);
-      this.cardTagRepository.createCardTag(createCardTag);
-      return card;
     }
+    // 카드 내용 생성
+    this.cardContentRepository.createCardContent(createCardContent);
+    // 해시태그 저장
+    this.cardTagRepository.createCardTag(createCardTag);
+    // 기존 태그 리스트를 조회해 매칭 카드가 없는 태그는 삭제 처리
+    const cardTag: CardTag[] = await this.cardTagRepository.getMany();
+    cardTag.forEach(async (data) => {
+      const cards = await this.cardRepository.getOneByTag(data.tag);
+      if (!cards || !cards.length) {
+        this.cardTagRepository.deleteCardTag(data.tag);
+      }
+    });
+    return card;
   }
 }
