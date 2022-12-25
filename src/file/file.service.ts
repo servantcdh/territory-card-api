@@ -1,7 +1,6 @@
 import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { CardAssignedRepository } from 'src/assign/repositories/card-assigned.repository';
-import { GetCardDto } from 'src/card/dto/get-card.dto';
 import { CardTag } from 'src/card/entities/card-tag.entity';
 import { CardBackupRepository } from 'src/card/repositories/card-backup.repository';
 import { CardContentBackupRepository } from 'src/card/repositories/card-content-backup.repository';
