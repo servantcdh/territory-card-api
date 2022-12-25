@@ -1,6 +1,8 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
+import { CreateCardTagDto } from '../dto/create-card-tag.dto';
 import { CreateCardDto } from '../dto/create-card.dto';
+import { GetCardDto } from '../dto/get-card.dto';
 import { UpdateCardDto } from '../dto/update-card.dto';
 import { Card } from '../entities/card.entity';
 
@@ -17,6 +19,39 @@ export class CardRepository extends Repository<Card> {
       .from(Card, 'c')
       .where('c.idx = :idx', { idx })
       .getRawOne();
+  }
+
+  getOneByTag(tag: string): Promise<Card[]> {
+    return this.dataSource
+    .createQueryBuilder()
+    .select()
+    .from(Card, 'c')
+    .where('c.memo REGEXP :tag', { tag })
+    .getRawMany();
+  }
+
+  async getMany(dto: GetCardDto): Promise<Card[]> {
+    const tags = dto.getTags();
+    const tagsIgnored = dto.getTagsIgnored();
+    let qb = this.dataSource
+    .createQueryBuilder()
+    .select()
+    .from(Card, 'c')
+    .where('c.idx > 0');
+    if (tags.length) {
+      tags.forEach((tag) => {
+        qb = qb.andWhere('c.memo REGEXP :tag', { tag });
+      });
+    }
+    if (tagsIgnored.length) {
+      tagsIgnored.forEach((tag) => {
+        qb = qb.andWhere('c.memo NOT REGEXP :tag', { tag });
+      });
+    }
+    return qb
+    .take(dto.getLimit())
+    .skip(dto.getOffset())
+    .getRawMany();
   }
 
   async createCard(cardDto: CreateCardDto) {
