@@ -48,7 +48,7 @@ export class CardRepository extends Repository<Card> {
     }
     if (tagsIgnored.length) {
       tagsIgnored.forEach((tag, idx) => {
-        const key = `tag${idx}`;
+        const key = `ignored${idx}`;
         const params = {};
         params[key] = tag;
         qb = qb.andWhere(`c.memo NOT REGEXP :${key}`, params);
