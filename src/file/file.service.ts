@@ -63,6 +63,25 @@ export class FileService {
     checkDto(createCard, ['name']);
     checkDto(createCardContent, ['street', 'building', 'name']);
 
+    // 기존 태그 리스트를 조회
+    const cardTag: CardTag[] = await this.cardTagRepository.getMany();
+    cardTag.forEach(async (data) => {
+      const cards = await this.cardRepository.getOneByTag(data.tag);
+      if (!cards || !cards.length) {
+        // 매칭 카드가 없는 태그는 삭제 처리
+        this.cardTagRepository.deleteCardTag(data.tag);
+      } else {
+        // 매칭 카드가 있는 태그는 사용 횟수 증가
+        createCardTag.forEach((dto) => {
+          if (dto.tag === data.tag) {
+            dto.count += cards.length;
+          }
+        });
+      }
+    });
+    // 해시태그 저장
+    await this.cardTagRepository.createCardTag(createCardTag);
+
     if (!card.idx) {
       // 1. 신규 카드 생성 > card entity 반환
       card.idx = await this.cardRepository.createCard(createCard);
@@ -109,22 +128,6 @@ export class FileService {
     }
     // 카드 내용 생성
     this.cardContentRepository.createCardContent(createCardContent);
-    // 기존 태그 리스트를 조회해 매칭 카드가 없는 태그는 삭제 처리
-    const cardTag: CardTag[] = await this.cardTagRepository.getMany();
-    cardTag.forEach(async (data) => {
-      const cards = await this.cardRepository.getOneByTag(data.tag);
-      if (!cards || !cards.length) {
-        this.cardTagRepository.deleteCardTag(data.tag);
-      } else {
-        createCardTag.forEach((dto) => {
-          if (dto.tag === data.tag) {
-            dto.count += cards.length;
-          }
-        });
-      }
-    });
-    // 해시태그 저장
-    this.cardTagRepository.createCardTag(createCardTag);
     return card;
   }
 }
