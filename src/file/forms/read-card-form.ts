@@ -28,7 +28,7 @@ export const readCardForm = async (
     .split(' ')
     .filter((word) => REGEX_HASHTAG.test(word))
     .map((word) => word.substring(word.indexOf('#')));
-  const createCardTag: CreateCardTagDto[] = tags.map((tag) => ({ tag }));
+  const createCardTag: CreateCardTagDto[] = tags.map((tag) => ({ tag, count: 1 }));
 
   // CardContent Dto Data
   const createCardContent: CreateCardContentDto[] = [];
