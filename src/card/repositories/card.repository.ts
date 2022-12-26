@@ -39,13 +39,19 @@ export class CardRepository extends Repository<Card> {
     .from(Card, 'c')
     .where('c.idx > 0');
     if (tags.length) {
-      tags.forEach((tag) => {
-        qb = qb.andWhere('c.memo REGEXP :tag', { tag });
+      tags.forEach((tag, idx) => {
+        const key = `tag${idx}`;
+        const params = {};
+        params[key] = tag;
+        qb = qb.andWhere(`c.memo REGEXP :${key}`, params);
       });
     }
     if (tagsIgnored.length) {
-      tagsIgnored.forEach((tag) => {
-        qb = qb.andWhere('c.memo NOT REGEXP :tag', { tag });
+      tagsIgnored.forEach((tag, idx) => {
+        const key = `tag${idx}`;
+        const params = {};
+        params[key] = tag;
+        qb = qb.andWhere(`c.memo NOT REGEXP :${key}`, params);
       });
     }
     return qb
