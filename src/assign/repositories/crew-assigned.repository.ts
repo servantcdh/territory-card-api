@@ -9,6 +9,7 @@ export class CrewAssignedRepository extends Repository<CrewAssigned> {
     super(CrewAssigned, dataSource.createEntityManager());
   }
 
+  // TODO: 배정과 삭제 토글
   async assignCrew(dto: CreateAssignedCrewDto) {
     try {
       const { identifiers } = await this.dataSource
