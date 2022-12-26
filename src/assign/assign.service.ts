@@ -59,32 +59,31 @@ export class AssignService {
     if (!assignedCard) {
       throw new ForbiddenException('없는 카드');
     }
-    const { userIdx: primary, dateCompleted } = assignedCard;
+    const { userIdx: userIdxAssignedTo, dateCompleted } = assignedCard;
     if (dateCompleted) {
       throw new ForbiddenException('이미 완료된 카드');
     }
-    const getUserDto = new GetUserDto();
-    getUserDto.idx = userIdx;
-    const user = await this.userRepository.getOne(getUserDto);
-    if (!user.auth) {
-      if (!user.guide) {
-        if (primary !== userIdx) {
-          throw new ForbiddenException(
-            '다음의 권한 중 하나를 가진 사용자여야함: 관리자, 인도자, 대표전도인',
-          );
+    if (userIdxAssignedTo !== userIdx) {
+      const getUserDto = new GetUserDto();
+      getUserDto.idx = userIdx;
+      const user = await this.userRepository.getOne(getUserDto);
+      if (!user.auth && !user.guide) {
+        throw new ForbiddenException(
+          '다음의 권한 중 하나를 가진 사용자여야함: 관리자, 인도자, 대표전도인',
+        );
+      } else {
+        if ((user.auth || user.guide) && user.idx !== userIdxAssignedTo) {
+          // 관리자 / 인도자 카드 회수
+          /**
+           * TODO 봉사 기록 조회 후 이력이 없다면 배정 카드 삭제 후 예외 처리
+           * if () {
+                 throw new  
+          }
+           */
         }
       }
     }
-    if ((user.auth || user.guide) && user.idx !== primary) {
-        // 관리자 / 인도자 카드 회수
-        /**
-         * TODO 봉사 기록 조회 후 이력이 없다면 배정 카드 삭제 후 예외 처리
-         * if () {
-               throw new  
-        }
-         */
-        
-    }
+
     dto.complete = true;
     const affected = await this.cardAssignedRepository.updateAssignedCard(dto);
     if (affected) {
@@ -93,7 +92,17 @@ export class AssignService {
     return affected;
   }
 
-  assignCrew(dto: CreateAssignedCrewDto) {
-    return this.crewAssignedRepository.assignCrew(dto);
+  async assignCrew(dto: CreateAssignedCrewDto) {
+    const crewAssigned = await this.crewAssignedRepository.getAssignedCrew(
+      dto.cardAssignedIdx,
+    );
+    console.log(crewAssigned);
+    if (!crewAssigned) {
+      return this.crewAssignedRepository.assignCrew(dto);
+    } else {
+      return this.crewAssignedRepository.deleteAssignedCrew(
+        dto.cardAssignedIdx,
+      );
+    }
   }
 }

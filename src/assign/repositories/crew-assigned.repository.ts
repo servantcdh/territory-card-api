@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CreateAssignedCrewDto } from '../dto/create-assigned-crew.dto';
 import { CrewAssigned } from '../entities/crew-assigned.entity';
@@ -9,7 +9,15 @@ export class CrewAssignedRepository extends Repository<CrewAssigned> {
     super(CrewAssigned, dataSource.createEntityManager());
   }
 
-  // TODO: 배정과 삭제 토글
+  getAssignedCrew(idx: number) {
+    return this.dataSource
+      .createQueryBuilder()
+      .select()
+      .from(CrewAssigned, 'ca')
+      .where('ca.cardAssignedIdx = :idx', { idx })
+      .getRawOne();
+  }
+
   async assignCrew(dto: CreateAssignedCrewDto) {
     try {
       const { identifiers } = await this.dataSource
@@ -20,19 +28,17 @@ export class CrewAssignedRepository extends Repository<CrewAssigned> {
         .execute();
       return identifiers.map((r) => r.idx);
     } catch (e) {
-      const message = e.sqlMessage as string;
-      if (message.includes('Duplicate')) {
-        console.log(message);
-      }
+      throw new ForbiddenException(e.sqlMessage);
     }
   }
 
-  // deleteAssignedCrew() {
-  //   return this.dataSource
-  //     .createQueryBuilder()
-  //     .delete()
-  //     .from(CardTag)
-  //     .where('tag = :tag', { tag })
-  //     .execute();
-  // }
+  async deleteAssignedCrew(idx: number) {
+    const { affected } = await this.dataSource
+      .createQueryBuilder()
+      .delete()
+      .from(CrewAssigned)
+      .where('cardAssignedIdx = :idx', { idx })
+      .execute();
+    return affected;
+  }
 }
