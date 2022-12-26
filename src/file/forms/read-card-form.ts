@@ -21,7 +21,7 @@ export const readCardForm = async (
   const status = true;
   const createCard: CreateCardDto = { name, memo };
   const updateCard: UpdateCardDto = { idx, status, ...createCard };
-  const card: Card = { ...createCard, idx, status };
+  const cardIdx = idx;
 
   // CardTag Dto Data
   const tags = memo
@@ -41,7 +41,7 @@ export const readCardForm = async (
       const refusal = row.getCell(5).toString().length === 1;
       if (street || building) {
         createCardContent.push({
-          card,
+          cardIdx,
           street,
           building,
           name,
@@ -53,7 +53,7 @@ export const readCardForm = async (
   });
 
   return {
-    card,
+    cardIdx,
     createCard,
     updateCard,
     createCardTag,
@@ -62,7 +62,7 @@ export const readCardForm = async (
 };
 
 export interface ReadCardFromExcel {
-  card: Card;
+  cardIdx: number;
   createCard: CreateCardDto;
   updateCard: UpdateCardDto;
   createCardTag: CreateCardTagDto[];

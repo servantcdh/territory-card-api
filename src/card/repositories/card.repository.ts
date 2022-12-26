@@ -1,5 +1,4 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { CardAssigned } from 'src/assign/entities/card-assigned.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateCardDto } from '../dto/create-card.dto';
 import { GetCardDto } from '../dto/get-card.dto';
@@ -13,29 +12,26 @@ export class CardRepository extends Repository<Card> {
   }
 
   getOne(idx: number): Promise<Card> {
-    return this.dataSource
-      .createQueryBuilder()
-      .select()
-      .from(Card, 'c')
-      .leftJoin(CardAssigned, 'ca', 'c.idx = ca.cardIdx')
-      .where('c.idx = :idx', { idx })
-      .getRawOne();
+    return this.createQueryBuilder('card')
+      .leftJoinAndSelect('card.cardAssigned', 'cardAssigned')
+      .leftJoinAndSelect('card.cardContent', 'cardContent')
+      .where('card.idx = :idx', { idx })
+      .getOne();
   }
 
   async getMany(dto: GetCardDto): Promise<Card[]> {
     const tags = dto.getTags();
     const tagsIgnored = dto.getTagsIgnored();
-    let qb = this.dataSource
-    .createQueryBuilder()
-    .select()
-    .from(Card, 'c')
-    .where('c.idx > 0');
+    let qb = this.createQueryBuilder('card')
+      .leftJoinAndSelect('card.cardAssigned', 'cardAssigned')
+      .leftJoinAndSelect('card.cardContent', 'cardContent')
+      .where('card.idx > 0');
     if (tags.length) {
       tags.forEach((tag, idx) => {
         const key = `tag${idx}`;
         const params = {};
         params[key] = tag;
-        qb = qb.andWhere(`c.memo REGEXP :${key}`, params);
+        qb = qb.andWhere(`card.memo REGEXP :${key}`, params);
       });
     }
     if (tagsIgnored.length) {
@@ -43,33 +39,30 @@ export class CardRepository extends Repository<Card> {
         const key = `ignored${idx}`;
         const params = {};
         params[key] = tag;
-        qb = qb.andWhere(`c.memo NOT REGEXP :${key}`, params);
+        qb = qb.andWhere(`card.memo NOT REGEXP :${key}`, params);
       });
     }
-    return qb
-    .take(dto.getLimit())
-    .skip(dto.getOffset())
-    .getRawMany();
+    return qb.take(dto.getLimit()).skip(dto.getOffset()).getMany();
   }
 
   async createCard(cardDto: CreateCardDto) {
     try {
+      const { identifiers } = await this.dataSource
+        .createQueryBuilder()
+        .insert()
+        .into(Card)
+        .values([
+          {
+            ...cardDto,
+            status: true,
+          },
+        ])
+        .execute();
+      const { idx } = identifiers[0];
+      return idx;
     } catch (e) {
       throw new ForbiddenException(e.sqlMessage);
     }
-    const { identifiers } = await this.dataSource
-      .createQueryBuilder()
-      .insert()
-      .into(Card)
-      .values([
-        {
-          ...cardDto,
-          status: true,
-        },
-      ])
-      .execute();
-    const { idx } = identifiers[0];
-    return idx;
   }
 
   async updateCard(cardDto: UpdateCardDto) {

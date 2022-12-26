@@ -1,8 +1,8 @@
-import { IsBoolean, IsString } from 'class-validator';
-import { Card } from '../entities/card.entity';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class CreateCardContentDto {
-  card: Card;
+  @IsNumber()
+  cardIdx: number;
 
   @IsString()
   street: string;

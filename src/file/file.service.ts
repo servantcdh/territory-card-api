@@ -23,11 +23,6 @@ export class FileService {
     private readonly cardContentBackupRepository: CardContentBackupRepository,
   ) {}
 
-  /**
-   * TODO
-   * * 구역배정기록은 반납 시점에서 쌓도록 해서 카드기록이 유실되어도 문제없도록 한다.
-   **/
-
   getCardForm(res: Response) {
     try {
       getCardForm(res);
@@ -56,7 +51,7 @@ export class FileService {
       throw new BadRequestException('엑셀 파일이 업로드되지 않음');
     }
 
-    let { card, createCard, updateCard, createCardTag, createCardContent } =
+    let { cardIdx, createCard, updateCard, createCardTag, createCardContent } =
       await readCardForm(file);
 
     // 유효성 검사
@@ -84,25 +79,26 @@ export class FileService {
     // 해시태그 저장
     await this.cardTagRepository.createCardTag(createCardTag);
 
-    if (!card.idx) {
+    if (!cardIdx) {
       // 1. 신규 카드 생성 > card entity 반환
-      card.idx = await this.cardRepository.createCard(createCard);
-      createCardContent = createCardContent.map((dto) => ({ ...dto, card }));
+      cardIdx = await this.cardRepository.createCard(createCard);
+      createCardContent = createCardContent.map((dto) => ({ ...dto, cardIdx }));
     } else {
       // 1. CardAssigned 조회 >> 할당 및 미반납 카드일 경우 예외 처리
-      const cardAssigned = await this.cardAssignedRepository.getOne(card.idx);
-      if (cardAssigned && !cardAssigned.dateCompleted) {
+      const cardAssigned = await this.cardAssignedRepository.getOneNotComplete(cardIdx);
+      if (cardAssigned) {
         throw new BadRequestException(
-          `사용중인 카드는 수정 불가: cardIdx ${card.idx}`,
+          `사용중인 카드는 수정 불가: cardIdx ${cardIdx}`,
         );
       }
       // 2. 기존 CardContent 내용을 캐싱 테이블로 이관 및 삭제
-      await this.cardContentBackupRepository.deleteCardContentBackup(card.idx);
+      await this.cardContentBackupRepository.deleteCardContentBackup(cardIdx);
       const cachingCardContent = await this.cardContentRepository.getMany(
-        card.idx,
+        cardIdx,
       );
       const cardContentBackup = cachingCardContent.map((cc) => ({
         ...cc,
+        cardIdx: cc.cardIdx,
         cardContentIdx: cc.idx,
       }));
       const applied_ccb =
@@ -111,25 +107,25 @@ export class FileService {
         );
       if (!applied_ccb.length) {
         throw new BadRequestException(
-          `CardContent 캐싱 실패: cardIdx ${card.idx}`,
+          `CardContent 캐싱 실패: cardIdx ${cardIdx}`,
         );
       }
-      this.cardContentRepository.deleteCardContent(card.idx);
+      this.cardContentRepository.deleteCardContent(cardIdx);
       // 3. 기존 Card 내용을 캐싱 테이블로 이관
-      await this.cardBackupRepository.deleteCardBackup(card.idx);
-      const cachingCard = await this.cardRepository.getOne(card.idx);
+      await this.cardBackupRepository.deleteCardBackup(cardIdx);
+      const cachingCard = await this.cardRepository.getOne(cardIdx);
       const cardBackup = { ...cachingCard, cardIdx: cachingCard.idx };
       const applied_c = await this.cardBackupRepository.createCardBackup(
         cardBackup,
       );
       if (!applied_c.length) {
-        throw new BadRequestException(`Card 캐싱 실패: cardIdx ${card.idx}`);
+        throw new BadRequestException(`Card 캐싱 실패: cardIdx ${cardIdx}`);
       }
       // 4. 수정된 내용으로 업데이트
       await this.cardRepository.updateCard(updateCard);
     }
     // 카드 내용 생성
     this.cardContentRepository.createCardContent(createCardContent);
-    return card;
+    return cardIdx;
   }
 }

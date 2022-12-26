@@ -24,6 +24,9 @@ export class CardContent {
   @Column({ type: 'bool', default: false, comment: '구역 카드 활성화 여부' })
   status: boolean;
 
-  @ManyToOne(() => Card, card => card.idx)
+  @Column({ type: 'int', comment: 'card.idx' })
+  cardIdx: number;
+
+  @ManyToOne(() => Card, card => card.cardContent, { nullable: false })
   card: Card;
 }
