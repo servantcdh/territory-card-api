@@ -7,8 +7,14 @@ export class CrewAssigned {
   @PrimaryGeneratedColumn()
   idx: number;
 
+  @Column({ type: 'int', comment: 'cardAssigned.idx', nullable: false })
+  cardAssignedIdx: number;
+
   @ManyToOne(() => CardAssigned, card => card.idx)
-  card: CardAssigned;
+  cardAssigned: CardAssigned;
+
+  @Column({ type: 'int', comment: '팀원 user.idx', nullable: false })
+  userIdx: number;
 
   @ManyToOne(() => User, user => user.idx)
   user: User;

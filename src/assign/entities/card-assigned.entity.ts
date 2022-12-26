@@ -5,15 +5,21 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CrewAssigned } from './crew-assigned.entity';
 
 @Entity()
 export class CardAssigned {
   @PrimaryGeneratedColumn()
   idx: number;
 
-  @CreateDateColumn({ type: 'timestamp', comment: '배정 날짜 (Y-m-d H:i:s)' })
+  @CreateDateColumn({
+    type: 'timestamp',
+    comment: '배정 날짜 (Y-m-d H:i:s)',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   dateAssigned: number;
 
   @Column({
@@ -22,10 +28,19 @@ export class CardAssigned {
     comment: '반납 날짜 (Y-m-d H:i:s)',
   })
   dateCompleted: number;
-  
-  @ManyToOne(() => Card, card => card.idx)
+
+  @Column({ type: 'int', comment: 'card.idx', nullable: false })
+  cardIdx: number;
+
+  @ManyToOne(() => Card, (card) => card.idx)
   card: Card;
 
-  @ManyToOne(() => User, user => user.idx)
+  @Column({ type: 'int', comment: '대표전도인 user.idx', nullable: true })
+  userIdx: number;
+
+  @ManyToOne(() => User, (user) => user.idx)
   user: User;
+
+  @OneToMany(() => CrewAssigned, (assigned) => assigned.cardAssigned)
+  crewAssigned: CrewAssigned[];
 }
