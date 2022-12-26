@@ -22,8 +22,8 @@ export class AuthService {
     return this.userRepository.getOne(getUserDto);
   }
 
-  async login(user: any) {
-    const payload = { name: user.name, sub: user.idx };
+  async login(dto: any) {
+    const payload = { name: dto.name, sub: dto.idx };
     const tokens = {
       accessToken: this.jwtService.sign(payload, {
         ...this.OPTION,
@@ -34,29 +34,28 @@ export class AuthService {
         expiresIn: '30d',
       }),
     }
-    this.updateAccess(tokens.refreshToken, user.idx);
-    return tokens;
-  }
-
-  private async updateAccess(refreshToken: string, idx: number) {
-    const getUserDto: GetUserDto = { idx };
-    const user = await this.userRepository.getOne(getUserDto);
     const accessDto: UpdateAccessDto = {
       car: false,
       status: false,
-      refreshToken,
-      user
+      refreshToken: tokens.refreshToken
     };
+    this.updateAccess(accessDto, dto);
+    return tokens;
+  }
+
+  async updateAccess(accessDto: UpdateAccessDto, getUserDto: GetUserDto | any) {
+    accessDto.user = getUserDto;
     const affected = await this.authRepository.updateAccess(accessDto);
     if (!affected) {
       const createAccessDto: CreateAccessDto = {
         car: false,
         status: false,
-        refreshToken,
-        user
+        refreshToken: accessDto.refreshToken,
+        user: accessDto.user
       }
       this.authRepository.createAccess(createAccessDto);
     }
+    return accessDto;
   }
 
   async refreshToken(req: Request) {

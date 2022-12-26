@@ -7,6 +7,7 @@ import { UserRepository } from 'src/user/repositories/user.repository';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { Access } from './entities/access.entity';
+import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { AuthRepository } from './repositories/auth.repository';
 
@@ -17,6 +18,6 @@ import { AuthRepository } from './repositories/auth.repository';
     JwtModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserRepository, AuthRepository, LocalStrategy],
+  providers: [AuthService, UserRepository, AuthRepository, LocalStrategy, JwtStrategy],
 })
 export class AuthModule {}
