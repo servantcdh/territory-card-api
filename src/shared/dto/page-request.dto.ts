@@ -1,7 +1,24 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PageRequestDto {
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsString()
+  target?: string;
+
+  @IsOptional()
+  @IsString()
+  orderBy?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  desc?: number | 0;
+
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
