@@ -18,7 +18,8 @@ export class AuthService {
   ) {}
 
   async validateUser(name: string) {
-    const getUserDto: any = { name };
+    const getUserDto = new GetUserDto();
+    getUserDto.name = name;
     return this.userRepository.getOne(getUserDto);
   }
 
