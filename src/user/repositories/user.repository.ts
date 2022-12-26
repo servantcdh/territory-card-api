@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Access } from 'src/auth/entities/access.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { GetUserDto } from '../dto/get-user.dto';
@@ -12,7 +13,10 @@ export class UserRepository extends Repository<User> {
   }
 
   getMany(dto: GetUserDto): Promise<User[]> {
-    let qb = this.dataSource.createQueryBuilder().select().from(User, 'u');
+    let qb = this.dataSource.createQueryBuilder()
+    .select()
+    .from(User, 'u')
+    .leftJoin(Access, 'a', 'u.idx = a.userIdx')
     if (dto) {
       if (dto.name) {
         qb = qb.where('u.name REGEXP :name', { name: dto.name });

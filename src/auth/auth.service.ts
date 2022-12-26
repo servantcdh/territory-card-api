@@ -36,7 +36,7 @@ export class AuthService {
     }
     const accessDto: UpdateAccessDto = {
       car: false,
-      status: false,
+      live: false,
       refreshToken: tokens.refreshToken
     };
     this.updateAccess(accessDto, dto);
@@ -49,7 +49,7 @@ export class AuthService {
     if (!affected) {
       const createAccessDto: CreateAccessDto = {
         car: false,
-        status: false,
+        live: false,
         refreshToken: accessDto.refreshToken,
         user: accessDto.user
       }

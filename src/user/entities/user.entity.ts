@@ -29,8 +29,8 @@ export class User {
   @Column({ type: 'bool', default: false, comment: '침례 여부' })
   baptize: boolean;
 
-  @Column({ type: 'bool', default: false, comment: '차량 소유 여부' })
-  car: boolean;
+  @Column({ type: 'bool', default: false, comment: '운전자 여부' })
+  driver: boolean;
 
   @Column({
     type: 'varchar',

@@ -10,7 +10,7 @@ export class Access {
   car: boolean;
 
   @Column({ type: 'boolean', default: false, comment: '접속 여부' })
-  status: boolean;
+  live: boolean;
 
   @Column({
     type: 'varchar',

@@ -6,7 +6,7 @@ export class CreateAccessDto {
   car: boolean;
 
   @IsBoolean()
-  status: boolean;
+  live: boolean;
 
   @IsString()
   refreshToken: string;

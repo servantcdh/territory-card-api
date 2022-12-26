@@ -20,7 +20,7 @@ export class CreateUserDto {
   baptize: boolean;
 
   @IsBoolean()
-  car: boolean;
+  driver: boolean;
 
   @IsOptional()
   @IsString()
