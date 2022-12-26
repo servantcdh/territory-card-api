@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { GetUserDto } from 'src/user/dto/get-user.dto';
 import { UserRepository } from 'src/user/repositories/user.repository';
 import { CreateAssignedCardDto } from './dto/create-assigned-card.dto';
@@ -25,7 +25,7 @@ export class AssignService {
       dto.cardIdx,
     );
     if (assignedCard) {
-      throw new ForbiddenException('이미 배정된 카드');
+      throw new BadRequestException('이미 배정된 카드');
     }
     return this.cardAssignedRepository.createAssignedCard(dto);
   }
@@ -35,17 +35,17 @@ export class AssignService {
       dto.cardAssignedIdx,
     );
     if (!assignedCard) {
-      throw new ForbiddenException('없는 카드');
+      throw new NotFoundException('없는 카드');
     }
     if (assignedCard.userIdx) {
-      throw new ForbiddenException('이미 대표전도인이 배정됨');
+      throw new BadRequestException('이미 대표전도인이 배정됨');
     }
     if (assignedCard.dateCompleted) {
-      throw new ForbiddenException('완료된 카드는 수정 불가');
+      throw new BadRequestException('완료된 카드는 수정 불가');
     }
     const crewAssignedUserIdx = assignedCard.crewAssigned.map((c) => c.userIdx);
     if (!crewAssignedUserIdx.includes(dto.userIdx)) {
-      throw new ForbiddenException('배정된 전도인이어야 함');
+      throw new BadRequestException('배정된 전도인이어야 함');
     }
     dto.complete = false;
     return this.cardAssignedRepository.updateAssignedCard(dto);
@@ -57,11 +57,11 @@ export class AssignService {
       cardAssignedIdx,
     );
     if (!assignedCard) {
-      throw new ForbiddenException('없는 카드');
+      throw new BadRequestException('없는 카드');
     }
     const { userIdx: userIdxAssignedTo, dateCompleted } = assignedCard;
     if (dateCompleted) {
-      throw new ForbiddenException('이미 완료된 카드');
+      throw new BadRequestException('이미 완료된 카드');
     }
     if (userIdxAssignedTo !== userIdx) {
       const getUserDto = new GetUserDto();
