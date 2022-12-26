@@ -4,12 +4,17 @@ import { GetUserDto } from './dto/get-user.dto';
 import { UserRepository } from './repositories/user.repository';
 import { hashSync } from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUserSearchDto } from './dto/get-user-search.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async getUser(idx: number) {
+  getMany(dto: GetUserSearchDto) {
+    return this.userRepository.getMany(dto);
+  }
+
+  async getOne(idx: number) {
     const getUserDto: GetUserDto = { idx };
     const user = await this.userRepository.getOne(getUserDto);
     if (!user) {

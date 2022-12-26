@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { GetUserSearchDto } from '../dto/get-user-search.dto';
 import { GetUserDto } from '../dto/get-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
@@ -9,6 +10,22 @@ import { User } from '../entities/user.entity';
 export class UserRepository extends Repository<User> {
   constructor(private readonly dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
+  }
+
+  getMany(dto: GetUserSearchDto): Promise<User[]> {
+    let qb = this.dataSource.createQueryBuilder().select().from(User, 'u');
+    if (dto) {
+      if (dto.search) {
+        qb = qb.where('u.name REGEXP :name', { name: dto.search });
+      }
+      if (dto.orderBy) {
+        qb = qb.orderBy(`ct.${dto.orderBy}`, !dto.desc ? 'ASC' : 'DESC');
+      }
+      if (dto.pageSize) {
+        qb = qb.take(dto.getLimit()).skip(dto.getOffset());
+      }
+    }
+    return qb.execute();
   }
 
   getOne(userDto: GetUserDto): Promise<User> {

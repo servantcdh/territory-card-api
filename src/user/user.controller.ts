@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
+import { GetUserSearchDto } from './dto/get-user-search.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
@@ -10,16 +11,22 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @UseGuards(AuthGuard('jwt'))
-  @Get(':idx')
-  getUser(@Param('idx') idx: number) {
-    return this.userService.getUser(idx);
+  @Get()
+  getMany(@Query() dto: GetUserSearchDto) {
+    return this.userService.getMany(dto);
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get()
+  @Get('one/:idx')
+  getOne(@Param('idx') idx: number) {
+    return this.userService.getOne(idx);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('one')
   getMe(@Req() req: Request) {
     const { idx } = req.user as any;
-    return this.userService.getUser(idx);
+    return this.userService.getOne(idx);
   }
 
   @UseGuards(AuthGuard('jwt'))
