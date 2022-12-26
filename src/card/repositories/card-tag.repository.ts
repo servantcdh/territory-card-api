@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { REGEX_HASHTAG } from 'src/file/forms/read-card-form';
+import { PageRequestDto } from 'src/shared/dto/page-request.dto';
 import { DataSource, Repository } from 'typeorm';
 import { CreateCardTagDto } from '../dto/create-card-tag.dto';
 import { CardTag } from '../entities/card-tag.entity';
@@ -10,12 +11,12 @@ export class CardTagRepository extends Repository<CardTag> {
     super(CardTag, dataSource.createEntityManager());
   }
 
-  getMany(): Promise<CardTag[]> {
-    return this.dataSource
-      .createQueryBuilder()
-      .select()
-      .from(CardTag, 'ct')
-      .execute();
+  getMany(dto?: PageRequestDto): Promise<CardTag[]> {
+    let qb = this.dataSource.createQueryBuilder().select().from(CardTag, 'ct');
+    if (dto) {
+      qb = qb.take(dto.getLimit()).skip(dto.getOffset());
+    }
+    return qb.execute();
   }
 
   async createCardTag(cardTagDto: CreateCardTagDto[]) {
