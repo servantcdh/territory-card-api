@@ -92,10 +92,15 @@ export class FileService {
         );
       }
       // 2. 기존 CardContent 내용을 캐싱 테이블로 이관 및 삭제
-      await this.cardContentBackupRepository.deleteCardContentBackup(cardIdx);
       const cachingCardContent = await this.cardContentRepository.getMany(
         cardIdx,
-      );
+        );
+        if (!cachingCardContent.length) {
+          throw new BadRequestException(
+            `엑셀 양식을 재다운로드 받아 작성해야 함`,
+          );
+        }
+      await this.cardContentBackupRepository.deleteCardContentBackup(cardIdx);
       const cardContentBackup = cachingCardContent.map((cc) => ({
         ...cc,
         cardIdx: cc.cardIdx,
