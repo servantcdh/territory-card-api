@@ -31,9 +31,9 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     let qb = this.createQueryBuilder('cardAssigned')
     .leftJoinAndSelect('cardAssigned.card', 'card')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
-    .where('cardAssigned.dateCompleted IS NULL')
+    .where('cardAssigned.dateCompleted IS NULL');
     if (dto.userIdx) {
-      qb = qb.andWhere('cardAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
+      qb = qb.andWhere('crewAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
     }
     return qb.getMany();
   }
