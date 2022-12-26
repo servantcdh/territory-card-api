@@ -64,6 +64,7 @@ import { FileModule } from './file/file.module';
         TerritoryRecord,
         TerritoryRecordContent,
       ],
+      timezone: 'Asia/Seoul',
       logging: false,
       synchronize: true, // Be careful ㅜㅜㅜ 그치만 신기해
     }),

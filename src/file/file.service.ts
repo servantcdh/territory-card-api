@@ -7,7 +7,7 @@ import { CardContentBackupRepository } from 'src/card/repositories/card-content-
 import { CardContentRepository } from 'src/card/repositories/card-content.repository';
 import { CardTagRepository } from 'src/card/repositories/card-tag.repository';
 import { CardRepository } from 'src/card/repositories/card.repository';
-import { PageRequestDto } from 'src/shared/dto/page-request.dto';
+import { GetCardDto } from 'src/card/dto/get-card.dto';
 import { getCardForm } from './forms/get-card-form';
 import { readCardForm } from './forms/read-card-form';
 import { checkDto } from './validators/check-validation';
@@ -66,7 +66,9 @@ export class FileService {
     // 기존 태그 리스트를 조회
     const cardTag: CardTag[] = await this.cardTagRepository.getMany();
     cardTag.forEach(async (data) => {
-      const cards = await this.cardRepository.getOneByTag(data.tag);
+      const getCardDto = new GetCardDto();
+      getCardDto.tags = data.tag.replace('#', '');
+      const cards = await this.cardRepository.getMany(getCardDto);
       if (!cards || !cards.length) {
         // 매칭 카드가 없는 태그는 삭제 처리
         this.cardTagRepository.deleteCardTag(data.tag);

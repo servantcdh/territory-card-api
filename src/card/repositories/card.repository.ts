@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { CardAssigned } from 'src/assign/entities/card-assigned.entity';
 import { DataSource, Repository } from 'typeorm';
-import { CreateCardTagDto } from '../dto/create-card-tag.dto';
 import { CreateCardDto } from '../dto/create-card.dto';
 import { GetCardDto } from '../dto/get-card.dto';
 import { UpdateCardDto } from '../dto/update-card.dto';
@@ -17,17 +17,9 @@ export class CardRepository extends Repository<Card> {
       .createQueryBuilder()
       .select()
       .from(Card, 'c')
+      .leftJoin(CardAssigned, 'ca', 'c.idx = ca.cardIdx')
       .where('c.idx = :idx', { idx })
       .getRawOne();
-  }
-
-  getOneByTag(tag: string): Promise<Card[]> {
-    return this.dataSource
-    .createQueryBuilder()
-    .select()
-    .from(Card, 'c')
-    .where('c.memo REGEXP :tag', { tag })
-    .getRawMany();
   }
 
   async getMany(dto: GetCardDto): Promise<Card[]> {
