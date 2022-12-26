@@ -14,7 +14,12 @@ export class CardTagRepository extends Repository<CardTag> {
   getMany(dto?: PageRequestDto): Promise<CardTag[]> {
     let qb = this.dataSource.createQueryBuilder().select().from(CardTag, 'ct');
     if (dto) {
-      qb = qb.take(dto.getLimit()).skip(dto.getOffset());
+      if (dto.orderBy) {
+        qb = qb.orderBy(`ct.${dto.orderBy}`, !dto.desc ? 'ASC' : 'DESC');
+      }
+      if (dto.pageSize) {
+        qb = qb.take(dto.getLimit()).skip(dto.getOffset());
+      }
     }
     return qb.execute();
   }
