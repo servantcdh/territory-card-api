@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
-import { GetUserSearchDto } from './dto/get-user-search.dto';
+import { GetUserDto } from './dto/get-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
@@ -12,7 +22,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get()
-  getMany(@Query() dto: GetUserSearchDto) {
+  getMany(@Query() dto: GetUserDto) {
     return this.userService.getMany(dto);
   }
 
@@ -30,14 +40,14 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Patch(':idx')
+  @Patch('one/:idx')
   updateUser(@Param('idx') idx: number, @Body() dto: UpdateUserDto) {
     dto.userIdx = idx;
     return this.userService.updateUser(dto);
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Patch()
+  @Patch('one')
   updateMe(@Req() req: Request, @Body() dto: UpdateUserDto) {
     const { idx } = req.user as any;
     dto.userIdx = idx;
