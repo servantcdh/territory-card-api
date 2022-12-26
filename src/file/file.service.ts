@@ -58,6 +58,9 @@ export class FileService {
     checkDto(createCard, ['name']);
     checkDto(createCardContent, ['street', 'building', 'name']);
 
+    // 해시태그 저장
+    await this.cardTagRepository.createCardTag(createCardTag);
+
     // 기존 태그 리스트를 조회
     const cardTag: CardTag[] = await this.cardTagRepository.getMany();
     cardTag.forEach(async (data) => {
@@ -76,8 +79,6 @@ export class FileService {
         });
       }
     });
-    // 해시태그 저장
-    await this.cardTagRepository.createCardTag(createCardTag);
 
     if (!cardIdx) {
       // 1. 신규 카드 생성 > card entity 반환
