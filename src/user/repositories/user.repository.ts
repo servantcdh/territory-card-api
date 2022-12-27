@@ -13,16 +13,29 @@ export class UserRepository extends Repository<User> {
   }
 
   getMany(dto: GetUserDto): Promise<User[]> {
-    let qb = this.dataSource.createQueryBuilder()
-    .select()
-    .from(User, 'u')
-    .leftJoin(Access, 'a', 'u.idx = a.userIdx')
+    let qb = this.dataSource
+      .createQueryBuilder()
+      .select([
+        'name',
+        'gender',
+        'guide',
+        'auth',
+        'baptize',
+        'driver',
+        'profile',
+        'status',
+        'car',
+        'live',
+        'userIdx',
+      ])
+      .from(User, 'user')
+      .leftJoin(Access, 'access', 'user.idx = access.userIdx');
     if (dto) {
       if (dto.name) {
-        qb = qb.where('u.name REGEXP :name', { name: dto.name });
+        qb = qb.where('user.name REGEXP :name', { name: dto.name });
       }
       if (dto.orderBy) {
-        qb = qb.orderBy(`ct.${dto.orderBy}`, !dto.desc ? 'ASC' : 'DESC');
+        qb = qb.orderBy(`user.${dto.orderBy}`, !dto.desc ? 'ASC' : 'DESC');
       }
       if (dto.pageSize) {
         qb = qb.take(dto.getLimit()).skip(dto.getOffset());
@@ -37,7 +50,17 @@ export class UserRepository extends Repository<User> {
     const parameters = idx ? { idx } : { name };
     return this.dataSource
       .createQueryBuilder()
-      .select()
+      .select([
+        'idx',
+        'name',
+        'gender',
+        'guide',
+        'auth',
+        'baptize',
+        'driver',
+        'profile',
+        'status'
+      ])
       .from(User, 'u')
       .where(where, parameters)
       .getRawOne();

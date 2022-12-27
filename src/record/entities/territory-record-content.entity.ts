@@ -20,8 +20,14 @@ export class TerritoryRecordContent {
   })
   dateCompleted: string;
 
+  @Column({ type: 'int', comment: 'territor_record.idx' })
+  territoryRecordIdx: number;
+
   @ManyToOne(() => TerritoryRecord, (record) => record.idx)
-  record: TerritoryRecord;
+  territoryRecord: TerritoryRecord;
+
+  @Column({ type: 'int', comment: 'user.idx' })
+  userIdx: number;
 
   @ManyToOne(() => User, (user) => user.idx)
   user: User;
