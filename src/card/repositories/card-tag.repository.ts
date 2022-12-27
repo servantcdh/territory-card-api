@@ -63,12 +63,13 @@ export class CardTagRepository extends Repository<CardTag> {
     }
   }
 
-  deleteCardTag(tag: string) {
-    return this.dataSource
+  async deleteCardTag(tag: string) {
+    const { affected } = await this.dataSource
       .createQueryBuilder()
       .delete()
       .from(CardTag)
       .where('tag = :tag', { tag })
       .execute();
+    return affected;
   }
 }

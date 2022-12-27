@@ -1,4 +1,5 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { CardRecord } from 'src/record/entities/card-record.entity';
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Card } from './card.entity';
 
 @Entity()
@@ -29,4 +30,7 @@ export class CardContent {
 
   @ManyToOne(() => Card, card => card.cardContent, { nullable: false })
   card: Card;
+
+  @OneToOne(() => CardRecord, (cardRecord) => cardRecord.cardContent)
+  cardRecord: CardRecord;
 }
