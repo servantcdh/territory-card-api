@@ -1,4 +1,5 @@
 import { Card } from 'src/card/entities/card.entity';
+import { CardRecord } from 'src/record/entities/card-record.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -20,14 +21,14 @@ export class CardAssigned {
     comment: '배정 날짜 (Y-m-d H:i:s)',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  dateAssigned: number;
+  dateAssigned: string;
 
   @Column({
     type: 'timestamp',
     nullable: true,
     comment: '반납 날짜 (Y-m-d H:i:s)',
   })
-  dateCompleted: number;
+  dateCompleted: string;
 
   @Column({ type: 'int', comment: 'card.idx', nullable: false })
   cardIdx: number;
@@ -43,4 +44,7 @@ export class CardAssigned {
 
   @OneToMany(() => CrewAssigned, (assigned) => assigned.cardAssigned)
   crewAssigned: CrewAssigned[];
+
+  @OneToMany(() => CardRecord, (assigned) => assigned.cardAssigned)
+  cardRecord: CardRecord[];
 }

@@ -14,7 +14,10 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
   getOne(cardContentIdx: number): Promise<CardAssigned> {
     return this.createQueryBuilder('cardAssigned')
     .leftJoinAndSelect('cardAssigned.card', 'card')
+    .leftJoinAndSelect('card.cardContent', 'cardContent')
+    .leftJoinAndSelect('cardContent.cardRecord', 'cardRecord')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
+    .leftJoinAndSelect('crewAssigned.user', 'user')
     .where('cardAssigned.idx = :cardContentIdx', { cardContentIdx })
     .getOne();
   }
@@ -31,6 +34,7 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     let qb = this.createQueryBuilder('cardAssigned')
     .leftJoinAndSelect('cardAssigned.card', 'card')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
+    .leftJoinAndSelect('crewAssigned.user', 'user')
     .where('cardAssigned.dateCompleted IS NULL');
     if (dto.userIdx) {
       qb = qb.andWhere('crewAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
@@ -73,6 +77,17 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     } catch (e) {
       throw new ForbiddenException(e.sqlMessage);
     }
+    
+  }
+
+  async deleteAssignedCard(cardAssignedIdx: number) {
+    const { affected } = await this.dataSource
+      .createQueryBuilder()
+      .delete()
+      .from(CardAssigned)
+      .where('idx = :idx', { idx: cardAssignedIdx })
+      .execute();
+    return affected;
   }
 
 }

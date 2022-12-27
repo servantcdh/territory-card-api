@@ -9,13 +9,13 @@ export class CrewAssignedRepository extends Repository<CrewAssigned> {
     super(CrewAssigned, dataSource.createEntityManager());
   }
 
-  getAssignedCrew(idx: number) {
+  getAssignedCrew(idx: number): Promise<CrewAssigned[]> {
     return this.dataSource
       .createQueryBuilder()
       .select()
       .from(CrewAssigned, 'ca')
       .where('ca.cardAssignedIdx = :idx', { idx })
-      .getRawOne();
+      .getRawMany();
   }
 
   async assignCrew(dto: CreateAssignedCrewDto) {
@@ -32,12 +32,13 @@ export class CrewAssignedRepository extends Repository<CrewAssigned> {
     }
   }
 
-  async deleteAssignedCrew(idx: number) {
+  async deleteAssignedCrew(dto: CreateAssignedCrewDto) {
+    const { cardAssignedIdx: idx, userIdx } = dto;
     const { affected } = await this.dataSource
       .createQueryBuilder()
       .delete()
       .from(CrewAssigned)
-      .where('cardAssignedIdx = :idx', { idx })
+      .where('cardAssignedIdx = :idx AND userIdx = :userIdx', { idx, userIdx })
       .execute();
     return affected;
   }

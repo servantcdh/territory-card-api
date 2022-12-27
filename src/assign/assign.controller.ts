@@ -33,14 +33,12 @@ export class AssignController {
     return this.assignService.assignCard(dto);
   }
 
-  @Patch('card/:idx')
+  @Get('card/me')
   @UseGuards(AuthGuard('jwt'))
-  updateUserIdxAssignedCard(
-    @Param('idx') cardAssignedIdx: number,
-    @Body() dto: UpdateAssignedCardDto,
-  ) {
-    dto.cardAssignedIdx = cardAssignedIdx;
-    return this.assignService.updateUserIdxAssignedCard(dto);
+  getAssignedCardToMe(@Req() req: Request, @Query() dto: GetAssignedCardDto) {
+    const { idx } = req.user as any;
+    dto.userIdx = idx;
+    return this.assignService.getMany(dto);
   }
 
   @Patch('card/me/:idx')
@@ -54,12 +52,20 @@ export class AssignController {
     return this.assignService.completeAssignedCard(dto);
   }
 
-  @Get('card/me')
+  @Get('card/:idx')
   @UseGuards(AuthGuard('jwt'))
-  getAssignedCardToMe(@Req() req: Request, @Query() dto: GetAssignedCardDto) {
-    const { idx } = req.user as any;
-    dto.userIdx = idx;
-    return this.assignService.getMany(dto);
+  getAssignedCardOne(@Param('idx') cardAssignedIdx: number) {
+    return this.assignService.getOne(cardAssignedIdx);
+  }
+
+  @Patch('card/:idx')
+  @UseGuards(AuthGuard('jwt'))
+  updateUserIdxAssignedCard(
+    @Param('idx') cardAssignedIdx: number,
+    @Body() dto: UpdateAssignedCardDto,
+  ) {
+    dto.cardAssignedIdx = cardAssignedIdx;
+    return this.assignService.updateUserIdxAssignedCard(dto);
   }
 
   @Post('crew')
