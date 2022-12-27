@@ -10,5 +10,5 @@ export class CreateCardRecordDto {
   cardContentIdx?: number;
 
   @IsNumber()
-  cardMarkIdx: 1 | 2;
+  cardMarkIdx: 0 | 1 | 2;
 }
