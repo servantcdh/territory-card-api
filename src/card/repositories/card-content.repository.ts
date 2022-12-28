@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CreateCardContentDto } from '../dto/create-card-content.dto';
+import { UpdateCardContentDto } from '../dto/update-card-content.dto';
 import { CardContent } from '../entities/card-content.entity';
 
 @Injectable()
@@ -30,6 +31,16 @@ export class CardContentRepository extends Repository<CardContent> {
     } catch (e) {
       throw new ForbiddenException(e.sqlMessage);
     }
+  }
+
+  updateCardContent(dto: UpdateCardContentDto) {
+    const { cardContentIdx, refusal } = dto;
+    return this.dataSource
+      .createQueryBuilder()
+      .update(CardContent)
+      .set({ refusal })
+      .where('idx = :cardContentIdx', { cardContentIdx })
+      .execute();
   }
 
   deleteCardContent(cardIdx: number) {

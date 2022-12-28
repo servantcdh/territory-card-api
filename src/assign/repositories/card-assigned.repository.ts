@@ -59,13 +59,13 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
 
   async updateAssignedCard(dto: UpdateAssignedCardDto) {
     try {
-      const { cardAssignedIdx: idx, userIdx, complete } = dto;
+      const { cardAssignedIdx: idx, userIdx, dateCompleted } = dto;
       const values: UpdateAssignedCardDto = {};
       if (userIdx) {
         values.userIdx = userIdx;
       }
-      if (complete) {
-        values.dateCompleted = new Date();
+      if (dateCompleted) {
+        values.dateCompleted = dateCompleted;
       }
       const { affected } = await this.dataSource
         .createQueryBuilder()

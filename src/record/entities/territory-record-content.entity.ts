@@ -17,6 +17,7 @@ export class TerritoryRecordContent {
     type: 'date',
     nullable: true,
     comment: 'cards_assigned.dateCompleted을 변환 (Y-m-d)',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   dateCompleted: string;
 

@@ -66,7 +66,6 @@ export class AssignService {
     if (!crewAssignedUserIdx.includes(dto.userIdx)) {
       throw new BadRequestException('배정된 전도인이어야 함');
     }
-    dto.complete = false;
     return this.cardAssignedRepository.updateAssignedCard(dto);
   }
 
@@ -78,7 +77,8 @@ export class AssignService {
     if (!assignedCard) {
       throw new BadRequestException('없는 카드');
     }
-    const { userIdx: userIdxAssignedTo, dateAssigned, dateCompleted, cardIdx } = assignedCard;
+    const { dateAssigned, cardIdx } = assignedCard;
+    let { userIdx: userIdxAssignedTo, dateCompleted } = assignedCard;
     if (dateCompleted) {
       throw new BadRequestException('이미 완료된 카드');
     }
@@ -100,15 +100,18 @@ export class AssignService {
           const cardRecord = await this.cardRecordRepository.getMany(getCardRecordDto);
           if (!cardRecord.length) {
             return this.cardAssignedRepository.deleteAssignedCard(cardAssignedIdx);
+          } else {
+            userIdxAssignedTo = cardRecord[0].crewAssigned.userIdx
           }
         }
       }
     }
-    // TODO: new Date 쓴 부분 한국 시간
-    dto.complete = true;
+    const offset = 1000 * 60 * 60 * 9
+    const korNow = new Date((new Date()).getTime() + offset);
+    dto.dateCompleted = korNow;
     const affected = await this.cardAssignedRepository.updateAssignedCard(dto);
     if (affected) {
-      const serviceYear = new Date().getFullYear();
+      const serviceYear = korNow.getFullYear();
       const createTerritoryRecordDto: CreateTerritoryRecordDto = { serviceYear, cardIdx };
       const territoryRecord = await this.territoryRecordRepository.getOne(serviceYear, cardIdx);
       let territoryRecordIdx = 0;
@@ -116,20 +119,19 @@ export class AssignService {
         territoryRecordIdx = await this.territoryRecordRepository.createTerritoryRecord(createTerritoryRecordDto);
       } else {
         territoryRecordIdx = territoryRecord.idx;
+        const lastDateCompleted = dto.dateCompleted;
         const updateTerritoryRecordDto: UpdateTerritoryRecordDto = {
           territoryRecordIdx,
-          lastDateCompleted: new Date(),
+          lastDateCompleted,
           ...createTerritoryRecordDto
         };
         this.territoryRecordRepository.updateTerritoryRecord(updateTerritoryRecordDto);
       }
-      const d = new Date();
-      const year = d.getFullYear(), month = d.getMonth() + 1, date = d.getDate();
+      
       const createTerritoryRecordContentDto: CreateTerritoryRecordContentDto = {
         territoryRecordIdx,
         userIdx: userIdxAssignedTo,
-        dateAssigned,
-        dateCompleted: `${year}-${month}-${date}`
+        dateAssigned
       };
       this.territoryRecordContentRepository.createTerritoryRecordContent(createTerritoryRecordContentDto);
     }

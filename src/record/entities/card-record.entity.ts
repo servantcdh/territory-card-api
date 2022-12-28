@@ -1,6 +1,14 @@
 import { CardAssigned } from 'src/assign/entities/card-assigned.entity';
+import { CrewAssigned } from 'src/assign/entities/crew-assigned.entity';
 import { CardContent } from 'src/card/entities/card-content.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CardMark } from './card-mark.entity';
 
 @Entity()
@@ -26,4 +34,10 @@ export class CardRecord {
 
   @ManyToOne(() => CardMark, (cardMark) => cardMark.mark)
   cardMark: CardMark;
+
+  @Column({ type: 'int', comment: 'crewAssigned.idx', nullable: false })
+  crewAssignedIdx: number;
+
+  @ManyToOne(() => CrewAssigned, (crewAssigned) => crewAssigned.cardRecord)
+  crewAssigned: CrewAssigned;
 }

@@ -24,7 +24,7 @@ export class CardAssigned {
   dateAssigned: string;
 
   @Column({
-    type: 'timestamp',
+    type: 'datetime',
     nullable: true,
     comment: '반납 날짜 (Y-m-d H:i:s)',
   })
@@ -42,7 +42,9 @@ export class CardAssigned {
   @ManyToOne(() => User, (user) => user.idx)
   user: User;
 
-  @OneToMany(() => CrewAssigned, (assigned) => assigned.cardAssigned)
+  @OneToMany(() => CrewAssigned, (assigned) => assigned.cardAssigned, {
+    cascade: true,
+  })
   crewAssigned: CrewAssigned[];
 
   @OneToMany(() => CardRecord, (assigned) => assigned.cardAssigned)

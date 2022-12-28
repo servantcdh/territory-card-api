@@ -12,8 +12,10 @@ export class CardRecordRepository extends Repository<CardRecord> {
 
   async getMany(dto: GetCardRecordDto): Promise<CardRecord[]> {
     return this.createQueryBuilder('cardRecord')
-      .leftJoinAndSelect('card.cardAssigned', 'cardAssigned')
-      .leftJoinAndSelect('card.cardMark', 'cardMark')
+      .leftJoinAndSelect('cardRecord.cardMark', 'cardMark')
+      .leftJoinAndSelect('cardRecord.cardAssigned', 'cardAssigned')
+      .leftJoinAndSelect('cardRecord.crewAssigned', 'crewAssigned')
+      .leftJoinAndSelect('crewAssigned.user', 'user')
       .where('cardAssigned.idx = :idx', { idx: dto.cardAssignedIdx })
       .getMany();
   }
