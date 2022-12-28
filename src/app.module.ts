@@ -66,7 +66,7 @@ import { FileModule } from './file/file.module';
       ],
       timezone: 'Asia/Seoul',
       logging: false,
-      synchronize: true, // Be careful ㅜㅜㅜ 그치만 신기해
+      synchronize: process.env.NODE_ENV === 'dev', // Be careful ㅜㅜㅜ 그치만 신기해
     }),
     AuthModule,
     UserModule,
