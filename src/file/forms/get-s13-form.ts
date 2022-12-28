@@ -5,6 +5,7 @@ import { StreamableFile } from '@nestjs/common';
 
 export const getS13 = async (territoryRecord: TerritoryRecord[]) => {
   try {
+    // TODO: 다섯 번째 카드 기록 부터는 다음 페이지로 넘어가도록 구현
     const template = fs.readFileSync('static/S-13_KO_template.docx');
 
     const records = territoryRecord.map((record) => {
