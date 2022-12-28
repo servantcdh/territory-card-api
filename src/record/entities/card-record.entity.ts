@@ -4,9 +4,8 @@ import { CardContent } from 'src/card/entities/card-content.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
+  ManyToMany,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CardMark } from './card-mark.entity';
@@ -25,8 +24,7 @@ export class CardRecord {
   @Column({ type: 'int', comment: 'cardContent.idx', nullable: false })
   cardContentIdx: number;
 
-  @OneToOne(() => CardContent, (cardContent) => cardContent.cardRecord)
-  @JoinColumn()
+  @ManyToMany(() => CardContent)
   cardContent: CardContent;
 
   @Column({ type: 'int', comment: 'cardMark.idx', nullable: false })

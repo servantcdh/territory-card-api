@@ -13,6 +13,8 @@ import { CardContentBackupRepository } from 'src/card/repositories/card-content-
 import { CardContentRepository } from 'src/card/repositories/card-content.repository';
 import { CardTagRepository } from 'src/card/repositories/card-tag.repository';
 import { CardRepository } from 'src/card/repositories/card.repository';
+import { TerritoryRecord } from 'src/record/entities/territory-record.entity';
+import { TerritoryRecordRepository } from 'src/record/repositories/territory-record.repository';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
 
@@ -24,7 +26,8 @@ import { FileService } from './file.service';
       CardTag,
       CardAssigned,
       CardBackup,
-      CardContentBackup
+      CardContentBackup,
+      TerritoryRecord
     ]),
   ],
   controllers: [FileController],
@@ -36,7 +39,8 @@ import { FileService } from './file.service';
     CardTagRepository,
     CardAssignedRepository,
     CardBackupRepository,
-    CardContentBackupRepository
+    CardContentBackupRepository,
+    TerritoryRecordRepository
   ],
 })
 export class FileModule {}

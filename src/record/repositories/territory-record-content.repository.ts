@@ -9,13 +9,13 @@ export class TerritoryRecordContentRepository extends Repository<TerritoryRecord
     super(TerritoryRecordContent, dataSource.createEntityManager());
   }
 
-  async createTerritoryRecordContent(TerritoryRecordContentDto: CreateTerritoryRecordContentDto) {
+  async createTerritoryRecordContent(dto: CreateTerritoryRecordContentDto) {
     try {
       const { identifiers } = await this.dataSource
         .createQueryBuilder()
         .insert()
         .into(TerritoryRecordContent)
-        .values(TerritoryRecordContentDto)
+        .values(dto)
         .execute();
       return identifiers.map((r) => r.idx);
     } catch (e) {

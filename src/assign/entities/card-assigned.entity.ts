@@ -21,7 +21,7 @@ export class CardAssigned {
     comment: '배정 날짜 (Y-m-d H:i:s)',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  dateAssigned: string;
+  dateAssigned: Date;
 
   @Column({
     type: 'datetime',

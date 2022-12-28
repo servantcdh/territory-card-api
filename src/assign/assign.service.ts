@@ -119,19 +119,17 @@ export class AssignService {
         territoryRecordIdx = await this.territoryRecordRepository.createTerritoryRecord(createTerritoryRecordDto);
       } else {
         territoryRecordIdx = territoryRecord.idx;
-        const lastDateCompleted = dto.dateCompleted;
         const updateTerritoryRecordDto: UpdateTerritoryRecordDto = {
           territoryRecordIdx,
-          lastDateCompleted,
+          lastDateCompleted: new Date((korNow).getTime() - offset),
           ...createTerritoryRecordDto
         };
         this.territoryRecordRepository.updateTerritoryRecord(updateTerritoryRecordDto);
       }
-      
       const createTerritoryRecordContentDto: CreateTerritoryRecordContentDto = {
         territoryRecordIdx,
         userIdx: userIdxAssignedTo,
-        dateAssigned
+        dateAssigned: new Date((dateAssigned).getTime() - offset)
       };
       this.territoryRecordContentRepository.createTerritoryRecordContent(createTerritoryRecordContentDto);
     }

@@ -11,7 +11,7 @@ export class TerritoryRecordContent {
     type: 'date',
     comment: 'cards_assigned.dateAssigned을 변환 (Y-m-d)',
   })
-  dateAssigned: string;
+  dateAssigned: Date;
 
   @Column({
     type: 'date',

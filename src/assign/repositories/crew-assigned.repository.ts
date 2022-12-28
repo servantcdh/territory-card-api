@@ -33,13 +33,19 @@ export class CrewAssignedRepository extends Repository<CrewAssigned> {
   }
 
   async deleteAssignedCrew(dto: CreateAssignedCrewDto) {
-    const { cardAssignedIdx: idx, userIdx } = dto;
-    const { affected } = await this.dataSource
-      .createQueryBuilder()
-      .delete()
-      .from(CrewAssigned)
-      .where('cardAssignedIdx = :idx AND userIdx = :userIdx', { idx, userIdx })
-      .execute();
-    return affected;
+    try {
+      const { cardAssignedIdx: idx, userIdx } = dto;
+      const { affected } = await this.dataSource
+        .createQueryBuilder()
+        .delete()
+        .from(CrewAssigned)
+        .where('cardAssignedIdx = :idx AND userIdx = :userIdx', { idx, userIdx })
+        .execute();
+      return affected;
+    } catch (e) {
+      // console.log(e);
+      return 0;
+    }
+    
   }
 }

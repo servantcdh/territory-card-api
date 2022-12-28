@@ -1,8 +1,8 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNumber } from 'class-validator';
 
 export class CreateTerritoryRecordContentDto {
-  @IsString()
-  dateAssigned: string;
+  @IsDate()
+  dateAssigned: Date;
 
   @IsNumber()
   territoryRecordIdx: number;

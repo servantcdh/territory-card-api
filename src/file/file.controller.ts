@@ -1,4 +1,14 @@
-import { Controller, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Header,
+  Param,
+  Post,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
@@ -27,4 +37,14 @@ export class FileController {
     return this.fileService.parseAndCreateCard(file);
   }
 
+  @Header(
+    'Content-Type',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  )
+  @Header('Content-Disposition', 'attachment; filename=s-13.docx')
+  // @UseGuards(AuthGuard('jwt'))
+  @Get('s-13/:serviceYear')
+  downloadS13ByExcel(@Param('serviceYear') serviceYear: number) {
+    return this.fileService.getTerritoryRecord(serviceYear);
+  }
 }

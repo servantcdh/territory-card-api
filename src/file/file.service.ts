@@ -1,4 +1,9 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { CardAssignedRepository } from 'src/assign/repositories/card-assigned.repository';
 import { CardTag } from 'src/card/entities/card-tag.entity';
@@ -7,9 +12,11 @@ import { CardContentBackupRepository } from 'src/card/repositories/card-content-
 import { CardContentRepository } from 'src/card/repositories/card-content.repository';
 import { CardTagRepository } from 'src/card/repositories/card-tag.repository';
 import { CardRepository } from 'src/card/repositories/card.repository';
+import { TerritoryRecordRepository } from 'src/record/repositories/territory-record.repository';
 import { GetCardDto } from 'src/card/dto/get-card.dto';
 import { getCardForm } from './forms/get-card-form';
 import { readCardForm } from './forms/read-card-form';
+import { getS13 } from './forms/get-s13-form';
 import { checkDto } from './validators/check-validation';
 
 @Injectable()
@@ -21,6 +28,7 @@ export class FileService {
     private readonly cardAssignedRepository: CardAssignedRepository,
     private readonly cardBackupRepository: CardBackupRepository,
     private readonly cardContentBackupRepository: CardContentBackupRepository,
+    private readonly territoryRecordRepository: TerritoryRecordRepository,
   ) {}
 
   getCardForm(res: Response) {
@@ -67,7 +75,9 @@ export class FileService {
       createCardContent = createCardContent.map((dto) => ({ ...dto, cardIdx }));
     } else {
       // 1. CardAssigned 조회 >> 할당 및 미반납 카드일 경우 예외 처리
-      const cardAssigned = await this.cardAssignedRepository.getOneNotComplete(cardIdx);
+      const cardAssigned = await this.cardAssignedRepository.getOneNotComplete(
+        cardIdx,
+      );
       if (cardAssigned) {
         throw new BadRequestException(
           `사용중인 카드는 수정 불가: cardIdx ${cardIdx}`,
@@ -76,12 +86,12 @@ export class FileService {
       // 2. 기존 CardContent 내용을 캐싱 테이블로 이관 및 삭제
       const cachingCardContent = await this.cardContentRepository.getMany(
         cardIdx,
+      );
+      if (!cachingCardContent.length) {
+        throw new BadRequestException(
+          `엑셀 양식을 재다운로드 받아 작성해야 함`,
         );
-        if (!cachingCardContent.length) {
-          throw new BadRequestException(
-            `엑셀 양식을 재다운로드 받아 작성해야 함`,
-          );
-        }
+      }
       await this.cardContentBackupRepository.deleteCardContentBackup(cardIdx);
       const cardContentBackup = cachingCardContent.map((cc) => ({
         ...cc,
@@ -132,5 +142,15 @@ export class FileService {
       }
     });
     return cardIdx;
+  }
+
+  async getTerritoryRecord(serviceYear: number) {
+    const territoryRecord = await this.territoryRecordRepository.getMany(
+      serviceYear,
+    );
+    if (!territoryRecord.length) {
+      throw new NotFoundException('해당 봉사 연도 구역 배정 기록이 없음');
+    }
+    return getS13(territoryRecord);
   }
 }

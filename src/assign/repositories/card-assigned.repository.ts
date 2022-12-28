@@ -11,14 +11,14 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     super(CardAssigned, dataSource.createEntityManager());
   }
 
-  getOne(cardContentIdx: number): Promise<CardAssigned> {
+  getOne(cardAssigned: number): Promise<CardAssigned> {
     return this.createQueryBuilder('cardAssigned')
     .leftJoinAndSelect('cardAssigned.card', 'card')
     .leftJoinAndSelect('card.cardContent', 'cardContent')
     .leftJoinAndSelect('cardContent.cardRecord', 'cardRecord')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
     .leftJoinAndSelect('crewAssigned.user', 'user')
-    .where('cardAssigned.idx = :cardContentIdx', { cardContentIdx })
+    .where('cardAssigned.idx = :cardAssigned', { cardAssigned })
     .getOne();
   }
 

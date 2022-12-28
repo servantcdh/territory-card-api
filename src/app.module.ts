@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+import * as path from 'path';
 import configuration from './config/configuration';
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
@@ -24,6 +25,7 @@ import { CardMark } from './record/entities/card-mark.entity';
 import { TerritoryRecord } from './record/entities/territory-record.entity';
 import { TerritoryRecordContent } from './record/entities/territory-record-content.entity';
 import { FileModule } from './file/file.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -41,6 +43,9 @@ import { FileModule } from './file/file.module';
         PORT: Joi.number().default(3000),
         JWT_SECRET: Joi.string().required(),
       }),
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', 'static')
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
