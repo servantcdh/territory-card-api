@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { CardAssignedRepository } from 'src/assign/repositories/card-assigned.repository';
 import { CardTag } from 'src/card/entities/card-tag.entity';
@@ -18,6 +19,7 @@ import { getCardForm } from './forms/get-card-form';
 import { readCardForm } from './forms/read-card-form';
 import { getS13 } from './forms/get-s13-form';
 import { checkDto } from './validators/check-validation';
+import { deleteFile } from './multer.option';
 
 @Injectable()
 export class FileService {
@@ -29,6 +31,7 @@ export class FileService {
     private readonly cardBackupRepository: CardBackupRepository,
     private readonly cardContentBackupRepository: CardContentBackupRepository,
     private readonly territoryRecordRepository: TerritoryRecordRepository,
+    private readonly configService: ConfigService,
   ) {}
 
   getCardForm(res: Response) {
@@ -152,5 +155,21 @@ export class FileService {
       throw new NotFoundException('해당 봉사 연도 구역 배정 기록이 없음');
     }
     return getS13(territoryRecord);
+  }
+
+  uploadProfile(file: Express.MulterS3.File) {
+    if (!file) {
+      throw new BadRequestException('프로필 사진이 업로드되지 않음');
+    }
+    return {
+      filePath: `${this.configService.get('AWS_DEPLOY_DOMAIN_NAME')}/${
+        file.key
+      }`,
+    };
+  }
+
+  deleteProfile(fileName: string) {
+    const key = `profile/${fileName}`;
+    return deleteFile(this.configService, key);
   }
 }

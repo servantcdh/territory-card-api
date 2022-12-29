@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Header,
   Param,
@@ -42,9 +43,22 @@ export class FileController {
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   )
   @Header('Content-Disposition', 'attachment; filename=s-13.docx')
-  // @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @Get('s-13/:serviceYear')
   downloadS13ByExcel(@Param('serviceYear') serviceYear: number) {
     return this.fileService.getTerritoryRecord(serviceYear);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('profile')
+  @UseInterceptors(FileInterceptor('profile'))
+  uploadProfile(@UploadedFile() file: Express.MulterS3.File) {
+    return this.fileService.uploadProfile(file);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('profile/:fileName')
+  deleteProfile(@Param('fileName') fileName: string) {
+    return this.fileService.deleteProfile(fileName);
   }
 }

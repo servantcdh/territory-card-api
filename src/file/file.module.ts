@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CardAssigned } from 'src/assign/entities/card-assigned.entity';
 import { CardAssignedRepository } from 'src/assign/repositories/card-assigned.repository';
@@ -17,6 +19,7 @@ import { TerritoryRecord } from 'src/record/entities/territory-record.entity';
 import { TerritoryRecordRepository } from 'src/record/repositories/territory-record.repository';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
+import { multerOptionFactory } from './multer.option';
 
 @Module({
   imports: [
@@ -29,6 +32,11 @@ import { FileService } from './file.service';
       CardContentBackup,
       TerritoryRecord
     ]),
+    MulterModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: multerOptionFactory,
+      inject: [ConfigService]
+    })
   ],
   controllers: [FileController],
   providers: [
