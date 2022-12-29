@@ -4,7 +4,6 @@ import { StreamableFile } from '@nestjs/common';
 
 export const getS13 = async (territoryRecord: any[]) => {
   try {
-    // TODO: 템플릿 반복문 수정 필요
     const template = fs.readFileSync('static/S-13_KO_template.docx');
 
     const docx: FormS13 = {
@@ -45,8 +44,6 @@ export const getS13 = async (territoryRecord: any[]) => {
         }
       }
     });
-
-    console.log(docx.rows);
 
     const s13 = await createReport({
       template,
