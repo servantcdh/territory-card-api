@@ -1,73 +1,67 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## TerritoryCard - 구역 카드 시스템
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세기 그리스도인들의 본을 따르기 위해 노력하는 사람들을 위해 만든 봉사 구역 카드 관리 시스템입니다.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+본 저장소는 TerriotoryCard의 BE 프로젝트를 관리하는 공간입니다.
 
-## Description
+(TerritoryCard의 FE 프로젝트 저장소를 방문하시려면 [여기](https://github.com/servantcdh/territory-card)를 클릭하세요.)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## README.md를 이렇게 활용하려고 합니다.
 
-## Installation
+1. TerritoryCard의 제작 과정을 기록합니다.
+2. 단기 목표를 설정하고 구현하는데 사용한 라이브러리나 레퍼런스를 함께 기록합니다.
+3. 특별히 인상적이었던 점이 있다면 또한 기록합니다.
 
-```bash
-$ npm install
-```
+## 이번 목표
 
-## Running the app
+- `web push` 발송을 구현한다.
 
-```bash
-# development
-$ npm run start
+## 사용한 라이브러리
 
-# watch mode
-$ npm run start:dev
+| name                  | version    | explain                                                           |
+| --------------------- | ---------- | ----------------------------------------------------------------- |
+| nestjs                | _^9.2.1_   | nestjs 설치                                                       |
+| class-validator       | _^0.13.2_  | dto에 타입 유효성 데코레이터 적용, controller request 유효성 검사 |
+| class-transformer     | _^0.5.1_   | dto에 형변환 데코레이터 적용, request params의 string 값을 형변환 |
+| @nestjs/mapped-types  | _^1.2.0_   | dto를 상속받아 모든 요소에 자동으로 isOptional 데코레이터 명시    |
+| @nestjs/typeorm       | _^9.0.1_   | typeorm typescript d.ts 제공                                      |
+| typeorm               | _^0.3.11_  | typeorm 설치                                                      |
+| mysql2                | _^2.3.3_   | mysql2 설치                                                       |
+| @nestjs/config        | _^2.2.0_   | 환경 변수 관리                                                    |
+| exceljs               | _^4.3.0_   | javascript excel library                                          |
+| cross-env             | _^7.0.3_   | npm script에서 환경 변수 지정할 때 사용                           |
+| joi                   | _^17.7.0_  | 환경 변수 유효성 체크                                             |
+| @nestjs/passport      | _^9.0.0_   | controller authGuard 구현                                         |
+| passport              | _^0.6.0_   | passport-local 의존성 모듈, strategy 구현에 필요                  |
+| passport-local        | _^1.0.0_   | local strategy validate 구현                                      |
+| @types/passport-local | _^1.0.34_  | passport-local typescript d.ts 제공                               |
+| bcrypt                | _^5.1.0_   | 패스워드 단방향 암호화                                            |
+| @types/bcrypt         | _^5.0.0_   | bcrypt typescript d.ts 제공                                       |
+| @nestjs/jwt           | _^9.0.0_   | jwt 생성 및 검증                                                  |
+| passport-jwt          | _^4.0.0_   | jwt strategy validate 구현                                        |
+| @types/passport-jwt   | _^3.0.8_   | passport-jwt typescript d.ts 제공                                 |
+| @nestjs/serve-static  | _^3.0.0_   | 정적 파일 서버 구현                                               |
+| docx-templates        | _^4.9.2_   | javascript docx template library                                  |
+| @aws-sdk/client-s3    | _^3.238.0_ | AWS S3 엑세스 인터페이스 제공                                     |
+| multer-s3             | _^3.0.1_   | S3 파일 업로드용 multer                                           |
+| @types/multer-s3      | _^3.0.0_   | multer-s3 typescript d.ts 제공                                    |
 
-# production mode
-$ npm run start:prod
-```
+## 특이 사항
 
-## Test
+아직은 없습니다.
 
-```bash
-# unit tests
-$ npm run test
+## 참고한 곳
 
-# e2e tests
-$ npm run test:e2e
+[AWS 프리티어: NDS Tech Blog](https://tech.cloud.nongshim.co.kr/2018/10/10/aws-프리티어free-tier-서비스/)
+[AWS S3 & CloudFront: 요즘IT](https://yozm.wishket.com/magazine/detail/1360/)
+[NestKS 파일 업로드: Kkiri Blog](https://devkkiri.com/post/96bdd7e2-3328-4450-8e54-332cd90d4066)
+[AWS CloudFront와 S3 연결하기: earth-95님의 티블로그](https://earth-95.tistory.com/m/128)
+[Nestjs Athentication: Nestjs](https://docs.nestjs.com/security/authentication)
+[Nestjs+TypeORM/QueryBuilder를 사용해야하는 이유: 25gstory.log](https://velog.io/@fj2008/NestjsTypeORM-QueryBuilder를-사용해야-하는-이유)
+[Nestjs+TypeORM/Pagination: outclass.log](https://velog.io/@outclassstudio/NestJS-TypeORM-Pagination)
 
-# test coverage
-$ npm run test:cov
-```
+## 만든이
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- Author - [DonghoChoi](https://github.com/servantcdh)
+- github - [servantcdh](https://github.com/servantcdh)
+- Email - [servantcdh@naver.com](servantcdh@naver.com)
