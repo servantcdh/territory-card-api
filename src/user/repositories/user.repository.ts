@@ -26,7 +26,7 @@ export class UserRepository extends Repository<User> {
         'status',
         'car',
         'live',
-        'userIdx',
+        'user.idx AS userIdx',
       ])
       .from(User, 'user')
       .leftJoin(Access, 'access', 'user.idx = access.userIdx');
