@@ -52,6 +52,7 @@ export class UserRepository extends Repository<User> {
       .createQueryBuilder()
       .select([
         'name',
+        'password',
         'gender',
         'guide',
         'auth',
