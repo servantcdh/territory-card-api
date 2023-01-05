@@ -60,6 +60,9 @@ export class AuthService {
   }
 
   async refreshToken(req: Request) {
+    if (!req.headers.authorization) {
+      throw new UnauthorizedException('accessToken must be provided');
+    }
     const accessToken = req.headers.authorization.split(' ')[1];
     if (this.verifyAccessToken(accessToken)) {
       try {
@@ -94,6 +97,8 @@ export class AuthService {
     switch (errorMessage) {
       case 'jwt expired':
         return true;
+      case 'accessToken must be provided':
+        throw new UnauthorizedException('헤더에 액세스 토큰이 없음');
       case 'jwt must be provided':
         throw new UnauthorizedException('쿠키에 갱신 토큰이 없음');
       case 'invalid signature':
