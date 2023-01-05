@@ -63,7 +63,7 @@ export class UserRepository extends Repository<User> {
         'live',
         'user.idx AS userIdx',
       ])
-      .from(User, 'u')
+      .from(User, 'user')
       .leftJoin(Access, 'access', 'user.idx = access.userIdx')
       .where(where, parameters)
       .getRawOne();
