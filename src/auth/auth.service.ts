@@ -34,11 +34,11 @@ export class AuthService {
         ...this.OPTION,
         expiresIn: '30d',
       }),
-    }
+    };
     const accessDto: UpdateAccessDto = {
       car: false,
       live: false,
-      refreshToken: tokens.refreshToken
+      refreshToken: tokens.refreshToken,
     };
     this.updateAccess(accessDto, dto);
     return tokens;
@@ -52,8 +52,8 @@ export class AuthService {
         car: false,
         live: false,
         refreshToken: accessDto.refreshToken,
-        user: accessDto.user
-      }
+        user: accessDto.user,
+      };
       this.authRepository.createAccess(createAccessDto);
     }
     return accessDto;
@@ -62,20 +62,20 @@ export class AuthService {
   async refreshToken(req: Request) {
     const accessToken = req.headers.authorization.split(' ')[1];
     if (this.verifyAccessToken(accessToken)) {
-      const { refreshToken } = req.body;
       try {
+        const refreshToken = req.cookies['r'];
         const { sub: userIdx, name } = this.jwtService.verify(
           refreshToken,
           this.OPTION,
         );
         const access = await this.authRepository.getOne(userIdx);
         if (access.refreshToken === refreshToken) {
-          return this.login({ idx: userIdx, name })
+          return this.login({ idx: userIdx, name });
         } else {
           throw new UnauthorizedException('not exist refreshToken');
         }
       } catch (e) {
-        this.throwError(e.message)
+        this.throwError(e.message);
         throw new UnauthorizedException(e.message);
       }
     }
@@ -94,6 +94,8 @@ export class AuthService {
     switch (errorMessage) {
       case 'jwt expired':
         return true;
+      case 'jwt must be provided':
+        throw new UnauthorizedException('쿠키에 갱신 토큰이 없음');
       case 'invalid signature':
         throw new UnauthorizedException('유효하지 않은 서명');
       case 'invalid token':

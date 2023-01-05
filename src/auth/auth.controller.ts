@@ -1,6 +1,6 @@
-import { Body, Controller, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { UpdateAccessDto } from './dto/update-access.dto';
 
@@ -10,8 +10,10 @@ export class AuthController {
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  login(@Req() req: Request) {
-    return this.authService.login(req.user);
+  async login(@Req() req: Request, @Res() res: Response) {
+    const { accessToken, refreshToken } = await this.authService.login(req.user);
+    res.cookie('r', refreshToken);
+    return res.send({ accessToken });
   }
 
   @Post('refreshToken')
