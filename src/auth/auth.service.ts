@@ -45,7 +45,7 @@ export class AuthService {
   }
 
   async updateAccess(accessDto: UpdateAccessDto, getUserDto: GetUserDto | any) {
-    accessDto.user = getUserDto;
+    accessDto.user = { ...getUserDto, idx: getUserDto.userIdx };
     const affected = await this.authRepository.updateAccess(accessDto);
     if (!affected) {
       const createAccessDto: CreateAccessDto = {
