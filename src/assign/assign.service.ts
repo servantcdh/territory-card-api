@@ -84,7 +84,7 @@ export class AssignService {
     }
     if (userIdxAssignedTo !== userIdx) {
       const getUserDto = new GetUserDto();
-      getUserDto.idx = userIdx;
+      getUserDto.userIdx = userIdx;
       const user = await this.userRepository.getOne(getUserDto);
       if (!user.auth && !user.guide) {
         throw new ForbiddenException(

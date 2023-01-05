@@ -4,7 +4,7 @@ import { PageRequestDto } from 'src/shared/dto/page-request.dto';
 export class GetUserDto extends PageRequestDto {
   @IsOptional()
   @IsNumber()
-  idx?: number;
+  userIdx?: number;
 
   @IsOptional()
   @IsString()

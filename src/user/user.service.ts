@@ -15,7 +15,7 @@ export class UserService {
 
   async getOne(idx: number) {
     const getUserDto = new GetUserDto();
-    getUserDto.idx = idx ;
+    getUserDto.userIdx = idx ;
     const user = await this.userRepository.getOne(getUserDto);
     if (!user) {
       throw new NotFoundException(`없는 사용자 Idx: ${idx}`);
