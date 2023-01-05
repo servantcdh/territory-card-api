@@ -17,8 +17,10 @@ export class AuthController {
   }
 
   @Post('refreshToken')
-  refreshToken(@Req() req: Request) {
-    return this.authService.refreshToken(req);
+  async refreshToken(@Req() req: Request, @Res() res: Response) {
+    const { accessToken, refreshToken } = await this.authService.refreshToken(req);
+    res.cookie('r', refreshToken);
+    return res.send({ accessToken });
   }
 
   @UseGuards(AuthGuard('jwt'))
