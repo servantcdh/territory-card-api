@@ -50,8 +50,21 @@ export class UserRepository extends Repository<User> {
     const parameters = idx ? { idx } : { name };
     return this.dataSource
       .createQueryBuilder()
-      .select()
+      .select([
+        'name',
+        'gender',
+        'guide',
+        'auth',
+        'baptize',
+        'driver',
+        'profile',
+        'status',
+        'car',
+        'live',
+        'user.idx AS userIdx',
+      ])
       .from(User, 'u')
+      .leftJoin(Access, 'access', 'user.idx = access.userIdx')
       .where(where, parameters)
       .getRawOne();
   }
