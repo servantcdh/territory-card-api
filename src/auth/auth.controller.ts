@@ -46,4 +46,12 @@ export class AuthController {
   updateAccess(@Req() req: Request, @Body() dto: UpdateAccessDto) {
     return this.authService.updateAccess(dto, req.user);
   }
+
+  @Patch('logout')
+  logout(@Res() res: Response) {
+    res.cookie('r', '', {
+      maxAge: 0,
+    });
+    return res.send();
+  }
 }
