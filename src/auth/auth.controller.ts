@@ -52,6 +52,6 @@ export class AuthController {
     res.cookie('r', '', {
       maxAge: 0,
     });
-    return res.send();
+    return res.send(true);
   }
 }
