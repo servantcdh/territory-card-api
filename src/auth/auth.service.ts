@@ -73,7 +73,7 @@ export class AuthService {
         );
         const access = await this.authRepository.getOne(userIdx);
         if (access.refreshToken === refreshToken) {
-          return this.login({ idx: userIdx, name });
+          return this.login({ userIdx, name });
         } else {
           throw new UnauthorizedException('not exist refreshToken');
         }
