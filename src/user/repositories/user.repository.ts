@@ -46,7 +46,7 @@ export class UserRepository extends Repository<User> {
 
   getOne(userDto: GetUserDto): Promise<User> {
     const { idx, name } = userDto;
-    const where = idx ? 'u.idx = :idx' : 'u.name = :name';
+    const where = idx ? 'user.idx = :idx' : 'user.name = :name';
     const parameters = idx ? { idx } : { name };
     return this.dataSource
       .createQueryBuilder()
