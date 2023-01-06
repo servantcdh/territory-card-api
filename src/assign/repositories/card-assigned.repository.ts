@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { PageRequestDto } from 'src/shared/dto/page-request.dto';
 import { DataSource, Repository } from 'typeorm';
 import { CreateAssignedCardDto } from '../dto/create-assigned-card.dto';
 import { GetAssignedCardDto } from '../dto/get-assigned-card.dto';
@@ -30,16 +31,29 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     .getRawOne();
   }
 
-  getMany(dto: GetAssignedCardDto): Promise<CardAssigned[]> {
+  getMany(dto: PageRequestDto): Promise<CardAssigned[]> {
     let qb = this.createQueryBuilder('cardAssigned')
     .leftJoinAndSelect('cardAssigned.card', 'card')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
     .leftJoinAndSelect('crewAssigned.user', 'user')
     .where('cardAssigned.dateCompleted IS NULL');
-    if (dto.userIdx) {
-      qb = qb.andWhere('crewAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
-    }
-    return qb.getMany();
+    return qb.take(dto.getLimit()).skip(dto.getOffset()).getMany();
+  }
+
+  async getManyToMe(dto: GetAssignedCardDto): Promise<CardAssigned[]> {
+    const { idx } = await this.createQueryBuilder()
+    .subQuery()
+    .select('cardAssigned.idx')
+    .from(CardAssigned, 'cardAssigned')
+    .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
+    .where('crewAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
+    .getOne();
+    return this.createQueryBuilder('cardAssigned')
+    .leftJoinAndSelect('cardAssigned.card', 'card')
+    .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
+    .leftJoinAndSelect('crewAssigned.user', 'user')
+    .where('cardAssigned.idx = :idx', { idx })
+    .getMany();
   }
 
   async createAssignedCard(dto: CreateAssignedCardDto) {

@@ -11,6 +11,7 @@ import { UpdateTerritoryRecordDto } from 'src/record/dto/update-territory-record
 import { CardRecordRepository } from 'src/record/repositories/card-record.repository';
 import { TerritoryRecordContentRepository } from 'src/record/repositories/territory-record-content.repository';
 import { TerritoryRecordRepository } from 'src/record/repositories/territory-record.repository';
+import { PageRequestDto } from 'src/shared/dto/page-request.dto';
 import { GetUserDto } from 'src/user/dto/get-user.dto';
 import { UserRepository } from 'src/user/repositories/user.repository';
 import { CreateAssignedCardDto } from './dto/create-assigned-card.dto';
@@ -35,8 +36,12 @@ export class AssignService {
     return this.cardAssignedRepository.getOne(assignedCardIdx);
   }
 
-  getMany(dto: GetAssignedCardDto) {
+  getMany(dto: PageRequestDto) {
     return this.cardAssignedRepository.getMany(dto);
+  }
+
+  getManyToMe(dto: GetAssignedCardDto) {
+    return this.cardAssignedRepository.getManyToMe(dto);
   }
 
   async assignCard(dto: CreateAssignedCardDto) {

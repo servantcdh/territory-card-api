@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { PageRequestDto } from 'src/shared/dto/page-request.dto';
 import { AssignService } from './assign.service';
 import { CreateAssignedCardDto } from './dto/create-assigned-card.dto';
 import { CreateAssignedCrewDto } from './dto/create-assigned-crew.dto';
@@ -23,7 +24,7 @@ export class AssignController {
 
   @Get('card')
   @UseGuards(AuthGuard('jwt'))
-  getAssignedCard(@Query() dto: GetAssignedCardDto) {
+  getAssignedCard(@Query() dto: PageRequestDto) {
     return this.assignService.getMany(dto);
   }
 
@@ -38,7 +39,7 @@ export class AssignController {
   getAssignedCardToMe(@Req() req: Request, @Query() dto: GetAssignedCardDto) {
     const { userIdx } = req.user as any;
     dto.userIdx = userIdx;
-    return this.assignService.getMany(dto);
+    return this.assignService.getManyToMe(dto);
   }
 
   @Patch('card/me/:idx')
