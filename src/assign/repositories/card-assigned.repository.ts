@@ -41,13 +41,17 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
   }
 
   async getManyToMe(dto: GetAssignedCardDto): Promise<CardAssigned[]> {
-    const { idx } = await this.createQueryBuilder()
+    const data = await this.createQueryBuilder()
     .subQuery()
     .select('cardAssigned.idx')
     .from(CardAssigned, 'cardAssigned')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
     .where('crewAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
     .getOne();
+    if (!data) {
+      return [];
+    }
+    const { idx } = data;
     return this.createQueryBuilder('cardAssigned')
     .leftJoinAndSelect('cardAssigned.card', 'card')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
