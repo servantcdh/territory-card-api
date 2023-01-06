@@ -36,8 +36,8 @@ export class AssignController {
   @Get('card/me')
   @UseGuards(AuthGuard('jwt'))
   getAssignedCardToMe(@Req() req: Request, @Query() dto: GetAssignedCardDto) {
-    const { idx } = req.user as any;
-    dto.userIdx = idx;
+    const { userIdx } = req.user as any;
+    dto.userIdx = userIdx;
     return this.assignService.getMany(dto);
   }
 
@@ -47,7 +47,7 @@ export class AssignController {
     @Req() req: Request,
     @Param('idx') cardAssignedIdx: number
   ) {
-    const { idx: userIdx } = req.user as any;
+    const { userIdx } = req.user as any;
     const dto: UpdateAssignedCardDto = { userIdx, cardAssignedIdx };
     return this.assignService.completeAssignedCard(dto);
   }

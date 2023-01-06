@@ -35,8 +35,8 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Get('one')
   getMe(@Req() req: Request) {
-    const { idx } = req.user as any;
-    return this.userService.getOne(idx);
+    const { userIdx } = req.user as any;
+    return this.userService.getOne(userIdx);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -49,8 +49,8 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Patch('one')
   updateMe(@Req() req: Request, @Body() dto: UpdateUserDto) {
-    const { idx } = req.user as any;
-    dto.userIdx = idx;
+    const { userIdx } = req.user as any;
+    dto.userIdx = userIdx;
     return this.userService.updateUser(dto);
   }
 

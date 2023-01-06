@@ -24,9 +24,9 @@ export class RecordController {
     @Param() params: CreateCardRecordParamsDto,
     @Body() dto: CreateCardRecordDto,
   ) {
-    const { idx } = req.user as any;
+    const { userIdx } = req.user as any;
     dto = { ...dto, ...params };
-    return this.recordService.recordCard(dto, idx);
+    return this.recordService.recordCard(dto, userIdx);
   }
 
   @Get('s-13/:serviceYear')
@@ -35,7 +35,7 @@ export class RecordController {
     @Req() req: Request,
     @Param('serviceYear') serviceYear: number,
   ) {
-    const { idx } = req.user as any;
-    return this.recordService.getTerritoryRecord(serviceYear, idx);
+    const { userIdx } = req.user as any;
+    return this.recordService.getTerritoryRecord(serviceYear, userIdx);
   }
 }

@@ -37,6 +37,7 @@ export class AuthRepository extends Repository<Access> {
   async updateAccess(accessDto: UpdateAccessDto) {
     try {
       const { user, ...dto } = accessDto;
+      console.log(user);
       const { affected } = await this.dataSource
         .createQueryBuilder()
         .update(Access)
