@@ -19,7 +19,7 @@ import { getCardForm } from './forms/get-card-form';
 import { readCardForm } from './forms/read-card-form';
 import { getS13 } from './forms/get-s13-form';
 import { checkDto } from './validators/check-validation';
-import { deleteFile } from './multer.option';
+import { deleteFile } from './multerS3.option';
 
 @Injectable()
 export class FileService {
@@ -68,9 +68,6 @@ export class FileService {
     // 유효성 검사
     checkDto(createCard, ['name']);
     checkDto(createCardContent, ['street', 'building', 'name']);
-
-    // 해시태그 저장
-    await this.cardTagRepository.createCardTag(createCardTag);
 
     if (!cardIdx) {
       // 1. 신규 카드 생성 > card entity 반환
@@ -128,22 +125,29 @@ export class FileService {
     this.cardContentRepository.createCardContent(createCardContent);
     // 기존 태그 리스트를 조회
     const cardTag: CardTag[] = await this.cardTagRepository.getMany();
-    cardTag.forEach(async (data) => {
+    for (const data of cardTag) {
       const getCardDto = new GetCardDto();
       getCardDto.tags = data.tag.replace('#', '');
       const cards = await this.cardRepository.getMany(getCardDto);
       if (!cards || !cards.length) {
         // 매칭 카드가 없는 태그는 삭제 처리
-        this.cardTagRepository.deleteCardTag(data.tag);
+        await this.cardTagRepository.deleteCardTag(data.tag);
       } else {
         // 매칭 카드가 있는 태그는 사용 횟수 증가
-        createCardTag.forEach((dto) => {
+        for (const dto of createCardTag) {
           if (dto.tag === data.tag) {
             dto.count += cards.length;
           }
-        });
+          if (!dto.count) {
+            dto.count++;
+          }
+        }
       }
-    });
+    }
+
+    // 태그 저장
+    this.cardTagRepository.createCardTag(createCardTag);
+  
     return cardIdx;
   }
 

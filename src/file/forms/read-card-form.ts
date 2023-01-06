@@ -3,7 +3,6 @@ import { CreateCardContentDto } from 'src/card/dto/create-card-content.dto';
 import { CreateCardDto } from 'src/card/dto/create-card.dto';
 import { CreateCardTagDto } from 'src/card/dto/create-card-tag.dto';
 import { UpdateCardDto } from 'src/card/dto/update-card.dto';
-import { Card } from 'src/card/entities/card.entity';
 
 export const REGEX_HASHTAG = /(#+[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9(_)]{1,})/;
 
@@ -28,7 +27,7 @@ export const readCardForm = async (
     .split(' ')
     .filter((word) => REGEX_HASHTAG.test(word))
     .map((word) => word.substring(word.indexOf('#')));
-  const createCardTag: CreateCardTagDto[] = tags.map((tag) => ({ tag, count: 1 }));
+  const createCardTag: CreateCardTagDto[] = tags.map((tag) => ({ tag, count: 0 }));
 
   // CardContent Dto Data
   const createCardContent: CreateCardContentDto[] = [];

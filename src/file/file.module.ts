@@ -19,7 +19,7 @@ import { TerritoryRecord } from 'src/record/entities/territory-record.entity';
 import { TerritoryRecordRepository } from 'src/record/repositories/territory-record.repository';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
-import { multerOptionFactory } from './multer.option';
+import { multerOptionFactory } from './multerS3.option';
 
 @Module({
   imports: [
