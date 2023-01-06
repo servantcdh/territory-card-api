@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PageRequestDto } from 'src/shared/dto/page-request.dto';
 import { CardService } from './card.service';
@@ -23,7 +23,8 @@ export class CardController {
 
   @Patch('one/:cardIdx')
   @UseGuards(AuthGuard('jwt'))
-  updateCard(@Param('cardIdx') cardIdx: number, dto: UpdateCardDto) {
+  updateCard(@Param('cardIdx') cardIdx: number, @Body() dto: UpdateCardDto) {
+    console.log(dto);
     dto.idx = cardIdx;
     return this.cardService.updateCard(dto);
   }
