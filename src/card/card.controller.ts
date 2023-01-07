@@ -24,7 +24,6 @@ export class CardController {
   @Patch('one/:cardIdx')
   @UseGuards(AuthGuard('jwt'))
   updateCard(@Param('cardIdx') cardIdx: number, @Body() dto: UpdateCardDto) {
-    console.log(dto);
     dto.idx = cardIdx;
     return this.cardService.updateCard(dto);
   }

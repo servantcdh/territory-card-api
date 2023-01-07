@@ -47,10 +47,13 @@ export class CardService {
           if (dto.tag === data.tag) {
             dto.count += cards.length;
           }
-          if (!dto.count) {
-            dto.count++;
-          }
         }
+      }
+    }
+
+    for (const dto of createCardTag) {
+      if (!dto.count) {
+        dto.count++;
       }
     }
 
