@@ -7,6 +7,10 @@ export class UpdateCardDto extends PartialType(CreateCardDto) {
   @IsNumber()
   idx?: number;
 
+  @IsOptional()
+  @IsNumber()
+  memoFocusUserIdx?: number;
+
   @IsBoolean()
   status: boolean;
 }

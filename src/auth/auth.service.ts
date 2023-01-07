@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { GetUserDto } from 'src/user/dto/get-user.dto';
+import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { UserRepository } from 'src/user/repositories/user.repository';
 import { CreateAccessDto } from './dto/create-access.dto';
 import { UpdateAccessDto } from './dto/update-access.dto';
@@ -54,7 +55,9 @@ export class AuthService {
         refreshToken: accessDto.refreshToken,
         user: accessDto.user,
       };
-      this.authRepository.createAccess(createAccessDto);
+      const accessIdx = await this.authRepository.createAccess(createAccessDto);
+      const dto: UpdateUserDto = { userIdx: getUserDto.userIdx, accessIdx };
+      this.userRepository.updateUser(dto);
     }
     return accessDto;
   }

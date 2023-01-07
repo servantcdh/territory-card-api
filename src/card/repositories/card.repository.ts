@@ -67,15 +67,11 @@ export class CardRepository extends Repository<Card> {
 
   async updateCard(cardDto: UpdateCardDto) {
     try {
-      const { idx, name, memo, status } = cardDto;
+      const { idx, ...dto } = cardDto;
       const { affected } = await this.dataSource
         .createQueryBuilder()
         .update(Card)
-        .set({
-          name,
-          memo,
-          status,
-        })
+        .set(dto)
         .where('idx = :idx', { idx })
         .execute();
       return affected;

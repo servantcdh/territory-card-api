@@ -1,5 +1,5 @@
 import { CardAssigned } from 'src/assign/entities/card-assigned.entity';
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CardContent } from './card-content.entity';
 
 @Entity()
@@ -12,6 +12,9 @@ export class Card {
 
   @Column({ type: 'text', nullable: true, comment: '구역 메모' })
   memo: string;
+
+  @Column({ type: 'int', nullable: true, comment: '구역 메모 작성중인 user의 idx' })
+  memoFocusUserIdx: number;
 
   @Column({ type: 'bool', default: false, comment: '구역 카드 활성화 여부' })
   status: boolean;

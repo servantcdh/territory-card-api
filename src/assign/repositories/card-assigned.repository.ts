@@ -16,9 +16,12 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     return this.createQueryBuilder('cardAssigned')
     .leftJoinAndSelect('cardAssigned.card', 'card')
     .leftJoinAndSelect('card.cardContent', 'cardContent')
-    .leftJoinAndSelect('cardContent.cardRecord', 'cardRecord')
+    .leftJoinAndSelect('cardAssigned.cardRecord', 'cardRecord')
+    .leftJoinAndSelect('cardRecord.crewAssigned', 'crew')
+    .leftJoinAndSelect('crew.user', 'u')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
     .leftJoinAndSelect('crewAssigned.user', 'user')
+    .leftJoinAndSelect('user.access', 'access')
     .where('cardAssigned.idx = :cardAssigned', { cardAssigned })
     .getOne();
   }

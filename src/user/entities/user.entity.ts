@@ -1,5 +1,5 @@
 import { Access } from 'src/auth/entities/access.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -42,4 +42,11 @@ export class User {
 
   @Column({ type: 'bool', default: false, comment: '계정 활성화 여부' })
   status: boolean;
+
+  @Column({ type: 'int', unique: true, nullable: true, comment: 'access.idx' })
+  accessIdx: number;
+
+  @OneToOne(() => Access)
+  @JoinColumn()
+  access: Access;
 }
