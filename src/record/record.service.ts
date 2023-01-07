@@ -35,12 +35,13 @@ export class RecordService {
       return this.cardRecordRepository.createCardRecord(dto);
     }
     const { idx: refusalMarkIdx } = await this.cardMarkRepository.getOneByMarkName('방문거절');
+    const isRefusal = dto.cardMarkIdx === refusalMarkIdx
+    const updateCardContentDto: UpdateCardContentDto = {
+      cardContentIdx: dto.cardContentIdx,
+      refusal: isRefusal
+    };
+    this.cardContentRepository.updateCardContent(updateCardContentDto);
     if (dto.cardMarkIdx === refusalMarkIdx) {
-      const updateCardContentDto: UpdateCardContentDto = {
-        cardContentIdx: dto.cardContentIdx,
-        refusal: true
-      };
-      this.cardContentRepository.updateCardContent(updateCardContentDto);
     }
     return affected;
   }
