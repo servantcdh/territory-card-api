@@ -37,11 +37,12 @@ export class CardRecordRepository extends Repository<CardRecord> {
 
   async updateCardRecord(dto: CreateCardRecordDto) {
     try {
-      const { cardAssignedIdx, cardContentIdx, cardMarkIdx } = dto;
+      const { cardAssignedIdx, cardContentIdx, cardMarkIdx, crewAssignedIdx } =
+        dto;
       const { affected } = await this.dataSource
         .createQueryBuilder()
         .update(CardRecord)
-        .set({ cardMarkIdx })
+        .set({ cardMarkIdx, crewAssignedIdx })
         .where(
           'cardAssignedIdx = :cardAssignedIdx AND cardContentIdx = :cardContentIdx',
           { cardAssignedIdx, cardContentIdx },
