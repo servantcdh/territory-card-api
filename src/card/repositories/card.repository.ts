@@ -23,7 +23,7 @@ export class CardRepository extends Repository<Card> {
     const tags = dto.getTags();
     const tagsIgnored = dto.getTagsIgnored();
     let qb = this.createQueryBuilder('card')
-      .leftJoin('card.cardAssigned', 'cardAssigned')
+      .leftJoinAndSelect('card.cardAssigned', 'cardAssigned')
       .where('cardAssigned.dateCompleted IS NOT NULL');
     if (tags.length) {
       tags.forEach((tag, idx) => {
