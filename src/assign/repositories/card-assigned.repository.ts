@@ -49,7 +49,8 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     .select('cardAssigned.idx')
     .from(CardAssigned, 'cardAssigned')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
-    .where('crewAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
+    .where('cardAssigned.dateCompleted IS NULL')
+    .andWhere('crewAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
     .getOne();
     if (!data) {
       return [];
