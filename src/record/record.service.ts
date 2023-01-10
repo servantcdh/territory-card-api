@@ -40,8 +40,9 @@ export class RecordService {
       cardContentIdx: dto.cardContentIdx,
       refusal: isRefusal
     };
-    this.cardContentRepository.updateCardContent(updateCardContentDto);
+    this.cardContentRepository.updateCardContentRefusal(updateCardContentDto);
     if (dto.cardMarkIdx === refusalMarkIdx) {
+
     }
     return affected;
   }

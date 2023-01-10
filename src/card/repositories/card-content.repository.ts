@@ -33,12 +33,22 @@ export class CardContentRepository extends Repository<CardContent> {
     }
   }
 
-  updateCardContent(dto: UpdateCardContentDto) {
+  updateCardContentRefusal(dto: UpdateCardContentDto) {
     const { cardContentIdx, refusal } = dto;
     return this.dataSource
       .createQueryBuilder()
       .update(CardContent)
       .set({ refusal })
+      .where('idx = :cardContentIdx', { cardContentIdx })
+      .execute();
+  }
+
+  updateCardContent(dto: UpdateCardContentDto) {
+    const { cardContentIdx, ...content } = dto;
+    return this.dataSource
+      .createQueryBuilder()
+      .update(CardContent)
+      .set(content)
       .where('idx = :cardContentIdx', { cardContentIdx })
       .execute();
   }
