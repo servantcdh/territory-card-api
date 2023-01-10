@@ -16,7 +16,7 @@ export class CardRepository extends Repository<Card> {
       .leftJoinAndSelect(
         'card.cardAssigned',
         'cardAssigned',
-        'cardAssigned.dateCompleted > :now',
+        'cardAssigned.dateAssigned > :now',
         { now: new Date(new Date().getFullYear() + '-01-01') },
       )
       .leftJoinAndSelect('card.cardContent', 'cardContent')
@@ -31,15 +31,11 @@ export class CardRepository extends Repository<Card> {
       .leftJoinAndSelect(
         'card.cardAssigned',
         'cardAssigned',
-        'cardAssigned.dateCompleted > :now',
+        'cardAssigned.dateAssigned > :now',
         { now: new Date(new Date().getFullYear() + '-01-01') },
       )
       .leftJoinAndSelect('card.cardContent', 'cardContent')
-      .leftJoinAndSelect('card.cardBackup', 'cardBackup')
-      .where('cardAssigned.dateCompleted > :now', {
-        now: new Date(new Date().getFullYear() + '-01-01'),
-      })
-      .orWhere('cardAssigned.dateCompleted IS NULL');
+      .leftJoinAndSelect('card.cardBackup', 'cardBackup');
     if (tags.length) {
       tags.forEach((tag, idx) => {
         const key = `tag${idx}`;
@@ -56,6 +52,7 @@ export class CardRepository extends Repository<Card> {
         qb = qb.andWhere(`card.memo NOT REGEXP :${key}`, params);
       });
     }
+    qb = qb.orderBy("cardAssigned.dateCompleted");
     return qb.take(dto.getLimit()).skip(dto.getOffset()).getMany();
   }
 
