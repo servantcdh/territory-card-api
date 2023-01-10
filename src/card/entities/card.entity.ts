@@ -1,5 +1,6 @@
 import { CardAssigned } from 'src/assign/entities/card-assigned.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { CardBackup } from './card-backup.entity';
 import { CardContent } from './card-content.entity';
 
 @Entity()
@@ -24,4 +25,7 @@ export class Card {
 
   @OneToMany(() => CardAssigned, (assigned) => assigned.card)
   cardAssigned: CardAssigned[];
+
+  @OneToMany(() => CardBackup, (backup) => backup.card)
+  cardBackup: CardBackup[];
 }

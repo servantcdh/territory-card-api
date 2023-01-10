@@ -35,6 +35,7 @@ export class CardRepository extends Repository<Card> {
         { now: new Date(new Date().getFullYear() + '-01-01') },
       )
       .leftJoinAndSelect('card.cardContent', 'cardContent')
+      .leftJoinAndSelect('card.cardBackup', 'cardBackup')
       .where('cardAssigned.dateCompleted IS NOT NULL')
       .orWhere('cardAssigned.dateAssigned IS NULL');
     if (tags.length) {
