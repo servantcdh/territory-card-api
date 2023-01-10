@@ -45,13 +45,15 @@ export class AssignService {
   }
 
   async assignCard(dto: CreateAssignedCardDto) {
-    const assignedCard = await this.cardAssignedRepository.getOneNotComplete(
-      dto.cardIdx,
-    );
-    if (assignedCard) {
-      throw new BadRequestException('이미 배정된 카드');
+    const map = dto.cardIdxes.split(',').map((idx) => ({ cardIdx: +idx }));
+    const createDto = [];
+    for (const dto of map) {
+      const assignedCard = await this.cardAssignedRepository.getOneNotComplete(dto.cardIdx);
+      if (!assignedCard) {
+        createDto.push(dto);
+      }
     }
-    return this.cardAssignedRepository.createAssignedCard(dto);
+    return this.cardAssignedRepository.createAssignedCard(createDto);
   }
 
   async updateUserIdxAssignedCard(dto: UpdateAssignedCardDto) {
@@ -102,41 +104,58 @@ export class AssignService {
          */
         if ((user.auth || user.guide) && user.idx !== userIdxAssignedTo) {
           const getCardRecordDto: GetCardRecordDto = { cardAssignedIdx };
-          const cardRecord = await this.cardRecordRepository.getMany(getCardRecordDto);
+          const cardRecord = await this.cardRecordRepository.getMany(
+            getCardRecordDto,
+          );
           if (!cardRecord.length) {
-            return this.cardAssignedRepository.deleteAssignedCard(cardAssignedIdx);
+            return this.cardAssignedRepository.deleteAssignedCard(
+              cardAssignedIdx,
+            );
           } else {
-            userIdxAssignedTo = cardRecord[0].crewAssigned.userIdx
+            userIdxAssignedTo = cardRecord[0].crewAssigned.userIdx;
           }
         }
       }
     }
-    const offset = 1000 * 60 * 60 * 9
-    const korNow = new Date((new Date()).getTime() + offset);
+    const offset = 1000 * 60 * 60 * 9;
+    const korNow = new Date(new Date().getTime() + offset);
     dto.dateCompleted = korNow;
     const affected = await this.cardAssignedRepository.updateAssignedCard(dto);
     if (affected) {
       const serviceYear = korNow.getFullYear();
-      const createTerritoryRecordDto: CreateTerritoryRecordDto = { serviceYear, cardIdx };
-      const territoryRecord = await this.territoryRecordRepository.getOne(serviceYear, cardIdx);
+      const createTerritoryRecordDto: CreateTerritoryRecordDto = {
+        serviceYear,
+        cardIdx,
+      };
+      const territoryRecord = await this.territoryRecordRepository.getOne(
+        serviceYear,
+        cardIdx,
+      );
       let territoryRecordIdx = 0;
       if (!territoryRecord) {
-        territoryRecordIdx = await this.territoryRecordRepository.createTerritoryRecord(createTerritoryRecordDto);
+        territoryRecordIdx =
+          await this.territoryRecordRepository.createTerritoryRecord(
+            createTerritoryRecordDto,
+          );
       } else {
         territoryRecordIdx = territoryRecord.idx;
         const updateTerritoryRecordDto: UpdateTerritoryRecordDto = {
           territoryRecordIdx,
-          lastDateCompleted: new Date((korNow).getTime() - offset),
-          ...createTerritoryRecordDto
+          lastDateCompleted: new Date(korNow.getTime() - offset),
+          ...createTerritoryRecordDto,
         };
-        this.territoryRecordRepository.updateTerritoryRecord(updateTerritoryRecordDto);
+        this.territoryRecordRepository.updateTerritoryRecord(
+          updateTerritoryRecordDto,
+        );
       }
       const createTerritoryRecordContentDto: CreateTerritoryRecordContentDto = {
         territoryRecordIdx,
         userIdx: userIdxAssignedTo,
-        dateAssigned: new Date((dateAssigned).getTime() - offset)
+        dateAssigned: new Date(dateAssigned.getTime() - offset),
       };
-      this.territoryRecordContentRepository.createTerritoryRecordContent(createTerritoryRecordContentDto);
+      this.territoryRecordContentRepository.createTerritoryRecordContent(
+        createTerritoryRecordContentDto,
+      );
     }
     return affected;
   }

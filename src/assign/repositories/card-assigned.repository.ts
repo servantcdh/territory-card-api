@@ -64,16 +64,15 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     .getMany();
   }
 
-  async createAssignedCard(dto: CreateAssignedCardDto) {
+  async createAssignedCard(dto: { cardIdx: number }[]) {
     try {
       const { identifiers } = await this.dataSource
         .createQueryBuilder()
         .insert()
         .into(CardAssigned)
-        .values([dto])
+        .values(dto)
         .execute();
-      const { idx } = identifiers[0];
-      return idx;
+      return identifiers;
     } catch (e) {
       throw new ForbiddenException(e.sqlMessage);
     }

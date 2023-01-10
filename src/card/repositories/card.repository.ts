@@ -36,8 +36,10 @@ export class CardRepository extends Repository<Card> {
       )
       .leftJoinAndSelect('card.cardContent', 'cardContent')
       .leftJoinAndSelect('card.cardBackup', 'cardBackup')
-      .where('cardAssigned.dateCompleted IS NOT NULL')
-      .orWhere('cardAssigned.dateAssigned IS NULL');
+      .where('cardAssigned.dateCompleted > :now', {
+        now: new Date(new Date().getFullYear() + '-01-01'),
+      })
+      .orWhere('cardAssigned.dateCompleted IS NULL');
     if (tags.length) {
       tags.forEach((tag, idx) => {
         const key = `tag${idx}`;
