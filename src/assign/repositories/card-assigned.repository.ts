@@ -39,6 +39,7 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     .leftJoinAndSelect('cardAssigned.card', 'card')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
     .leftJoinAndSelect('crewAssigned.user', 'user')
+    .leftJoinAndSelect('user.access', 'access')
     .where('cardAssigned.dateCompleted IS NULL');
     return qb.take(dto.getLimit()).skip(dto.getOffset()).getMany();
   }

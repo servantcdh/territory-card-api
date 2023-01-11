@@ -10,7 +10,7 @@ export class CrewAssignedRepository extends Repository<CrewAssigned> {
 
   getAssignedCrew(cardAssignedIdx: number) {
     return this.createQueryBuilder('crewAssigned')
-      .select('crewAssigned.userIdx')
+      .select()
       .where('crewAssigned.cardAssignedIdx = :cardAssignedIdx', {
         cardAssignedIdx,
       })
