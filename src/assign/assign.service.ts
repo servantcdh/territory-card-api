@@ -48,7 +48,9 @@ export class AssignService {
     const map = dto.cardIdxes.split(',').map((idx) => ({ cardIdx: +idx }));
     const createDto = [];
     for (const dto of map) {
-      const assignedCard = await this.cardAssignedRepository.getOneNotComplete(dto.cardIdx);
+      const assignedCard = await this.cardAssignedRepository.getOneNotComplete(
+        dto.cardIdx,
+      );
       if (!assignedCard) {
         createDto.push(dto);
       }
@@ -161,10 +163,33 @@ export class AssignService {
   }
 
   async assignCrew(dto: CreateAssignedCrewDto) {
-    const affected = await this.crewAssignedRepository.deleteAssignedCrew(dto);
-    if (!affected) {
-      return this.crewAssignedRepository.assignCrew(dto);
-    }
-    return affected;
+    // 배정된 전도인 리스트 불러오기
+    // 비교해서 일치시키기
+    const { cardAssignedIdx, userIdxes } = dto;
+    const crewsAssigned = await this.crewAssignedRepository.getAssignedCrew(
+      cardAssignedIdx,
+    );
+    const userIdxesCrews = crewsAssigned.map((assigned) => assigned.userIdx);
+    const userIdxesForDelete = userIdxesCrews.filter(
+      (userIdx) => !userIdxes.includes(userIdx),
+    );
+    const userIdxesForInsert = userIdxes.filter(
+      (userIdx) => !userIdxesCrews.includes(userIdx),
+    );
+    const deleteDto = userIdxesForDelete.map((userIdx) => ({
+      userIdx,
+      cardAssignedIdx,
+    }));
+    const insertDto = userIdxesForInsert.map((userIdx) => ({
+      userIdx,
+      cardAssignedIdx,
+    }));
+    const affected = deleteDto.length
+      ? await this.crewAssignedRepository.deleteCrew(deleteDto)
+      : 0;
+    const identifiers = insertDto.length
+      ? await this.crewAssignedRepository.assignCrew(insertDto)
+      : 0;
+    return { affected, identifiers };
   }
 }

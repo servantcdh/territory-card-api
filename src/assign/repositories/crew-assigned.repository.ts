@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
-import { CreateAssignedCrewDto } from '../dto/create-assigned-crew.dto';
+import { Brackets, DataSource, Repository } from 'typeorm';
 import { CrewAssigned } from '../entities/crew-assigned.entity';
 
 @Injectable()
@@ -9,16 +8,16 @@ export class CrewAssignedRepository extends Repository<CrewAssigned> {
     super(CrewAssigned, dataSource.createEntityManager());
   }
 
-  getAssignedCrew(idx: number): Promise<CrewAssigned[]> {
-    return this.dataSource
-      .createQueryBuilder()
-      .select()
-      .from(CrewAssigned, 'ca')
-      .where('ca.cardAssignedIdx = :idx', { idx })
-      .getRawMany();
+  getAssignedCrew(cardAssignedIdx: number) {
+    return this.createQueryBuilder('crewAssigned')
+      .select('crewAssigned.userIdx')
+      .where('crewAssigned.cardAssignedIdx = :cardAssignedIdx', {
+        cardAssignedIdx,
+      })
+      .getMany();
   }
 
-  async assignCrew(dto: CreateAssignedCrewDto) {
+  async assignCrew(dto: { cardAssignedIdx: number; userIdx: number }[]) {
     try {
       const { identifiers } = await this.dataSource
         .createQueryBuilder()
@@ -26,26 +25,34 @@ export class CrewAssignedRepository extends Repository<CrewAssigned> {
         .into(CrewAssigned)
         .values(dto)
         .execute();
-      return identifiers.map((r) => r.idx);
+      return identifiers;
     } catch (e) {
       throw new ForbiddenException(e.sqlMessage);
     }
   }
 
-  async deleteAssignedCrew(dto: CreateAssignedCrewDto) {
+  async deleteCrew(dto: { cardAssignedIdx: number; userIdx: number }[]) {
     try {
-      const { cardAssignedIdx: idx, userIdx } = dto;
-      const { affected } = await this.dataSource
-        .createQueryBuilder()
-        .delete()
-        .from(CrewAssigned)
-        .where('cardAssignedIdx = :idx AND userIdx = :userIdx', { idx, userIdx })
-        .execute();
+      let qb = this.createQueryBuilder('crewAssigned').delete();
+      dto.forEach((d, i) => {
+        const { cardAssignedIdx, userIdx } = d;
+        const params: any = {};
+        params[`cardAssignedIdx${i}`] = cardAssignedIdx;
+        params[`userIdx${i}`] = userIdx;
+        qb = qb.orWhere(
+          new Brackets((q) => {
+            q.orWhere(
+              `cardAssignedIdx = :cardAssignedIdx${i} AND userIdx = :userIdx${i}`,
+              params,
+            );
+          }),
+        );
+      });
+      const { affected } = await qb.execute();
       return affected;
     } catch (e) {
       // console.log(e);
       return 0;
     }
-    
   }
 }
