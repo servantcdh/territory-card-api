@@ -1,6 +1,6 @@
-import { IsString } from 'class-validator';
+import { IsArray } from 'class-validator';
 
 export class CreateAssignedCardDto {
-  @IsString()
-  cardIdxes: string;
+  @IsArray()
+  cardIdxes: number[];
 }

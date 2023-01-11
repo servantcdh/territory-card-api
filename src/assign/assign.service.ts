@@ -45,7 +45,7 @@ export class AssignService {
   }
 
   async assignCard(dto: CreateAssignedCardDto) {
-    const map = dto.cardIdxes.split(',').map((idx) => ({ cardIdx: +idx }));
+    const map = dto.cardIdxes.map((cardIdx) => ({ cardIdx }));
     const createDto = [];
     for (const dto of map) {
       const assignedCard = await this.cardAssignedRepository.getOneNotComplete(
