@@ -65,15 +65,14 @@ export class AssignService {
     if (!assignedCard) {
       throw new NotFoundException('없는 카드');
     }
-    if (assignedCard.userIdx) {
-      throw new BadRequestException('이미 대표전도인이 배정됨');
-    }
     if (assignedCard.dateCompleted) {
       throw new BadRequestException('완료된 카드는 수정 불가');
     }
-    const crewAssignedUserIdx = assignedCard.crewAssigned.map((c) => c.userIdx);
-    if (!crewAssignedUserIdx.includes(dto.userIdx)) {
-      throw new BadRequestException('배정된 전도인이어야 함');
+    if (dto.userIdx) {
+      const crewAssignedUserIdx = assignedCard.crewAssigned.map((c) => c.userIdx);
+      if (!crewAssignedUserIdx.includes(dto.userIdx)) {
+        throw new BadRequestException('배정된 전도인이어야 함');
+      }
     }
     return this.cardAssignedRepository.updateAssignedCard(dto);
   }

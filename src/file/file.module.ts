@@ -17,6 +17,8 @@ import { CardTagRepository } from 'src/card/repositories/card-tag.repository';
 import { CardRepository } from 'src/card/repositories/card.repository';
 import { TerritoryRecord } from 'src/record/entities/territory-record.entity';
 import { TerritoryRecordRepository } from 'src/record/repositories/territory-record.repository';
+import { User } from 'src/user/entities/user.entity';
+import { UserRepository } from 'src/user/repositories/user.repository';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
 import { multerOptionFactory } from './multerS3.option';
@@ -30,7 +32,8 @@ import { multerOptionFactory } from './multerS3.option';
       CardAssigned,
       CardBackup,
       CardContentBackup,
-      TerritoryRecord
+      TerritoryRecord,
+      User
     ]),
     MulterModule.registerAsync({
       imports: [ConfigModule],
@@ -48,7 +51,8 @@ import { multerOptionFactory } from './multerS3.option';
     CardAssignedRepository,
     CardBackupRepository,
     CardContentBackupRepository,
-    TerritoryRecordRepository
+    TerritoryRecordRepository,
+    UserRepository
   ],
 })
 export class FileModule {}

@@ -20,6 +20,8 @@ import { readCardForm } from './forms/read-card-form';
 import { getS13 } from './forms/get-s13-form';
 import { checkDto } from './validators/check-validation';
 import { deleteFile } from './multerS3.option';
+import { UserRepository } from 'src/user/repositories/user.repository';
+import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 
 @Injectable()
 export class FileService {
@@ -31,6 +33,7 @@ export class FileService {
     private readonly cardBackupRepository: CardBackupRepository,
     private readonly cardContentBackupRepository: CardContentBackupRepository,
     private readonly territoryRecordRepository: TerritoryRecordRepository,
+    private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
   ) {}
 
@@ -150,7 +153,7 @@ export class FileService {
 
     // 태그 저장
     this.cardTagRepository.createCardTag(createCardTag);
-  
+
     return cardIdx;
   }
 
@@ -164,19 +167,30 @@ export class FileService {
     return getS13(territoryRecord);
   }
 
-  uploadProfile(file: Express.MulterS3.File) {
+  uploadProfile(file: Express.MulterS3.File, userIdx: number) {
     if (!file) {
       throw new BadRequestException('프로필 사진이 업로드되지 않음');
     }
-    return {
-      filePath: `${this.configService.get('AWS_DEPLOY_DOMAIN_NAME')}/${
-        file.key
-      }`,
-    };
+    const filePath = `${this.configService.get('AWS_DEPLOY_DOMAIN_NAME')}/${
+      file.key
+    }`;
+
+    const dto = new UpdateUserDto();
+    dto.userIdx = userIdx;
+    dto.profile = filePath;
+    this.userRepository.updateUser(dto);
+
+    return { filePath };
   }
 
-  deleteProfile(fileName: string) {
+  deleteProfile(fileName: string, userIdx: number) {
     const key = `profile/${fileName}`;
+
+    const dto = new UpdateUserDto();
+    dto.userIdx = userIdx;
+    dto.profile = null;
+    this.userRepository.updateUser(dto);
+
     return deleteFile(this.configService, key);
   }
 }

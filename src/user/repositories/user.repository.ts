@@ -99,4 +99,19 @@ export class UserRepository extends Repository<User> {
       throw new ForbiddenException(e.sqlMessage);
     }
   }
+
+  async updateUserProfile(userDto: UpdateUserDto) {
+    try {
+      const { userIdx, profile } = userDto;
+      const { affected } = await this.dataSource
+        .createQueryBuilder()
+        .update(User)
+        .set({ profile })
+        .where('idx = :idx', { idx: userIdx })
+        .execute();
+      return affected;
+    } catch (e) {
+      throw new ForbiddenException(e.sqlMessage);
+    }
+  }
 }

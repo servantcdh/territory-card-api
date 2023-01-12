@@ -83,9 +83,7 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     try {
       const { cardAssignedIdx: idx, userIdx, dateCompleted } = dto;
       const values: UpdateAssignedCardDto = {};
-      if (userIdx) {
-        values.userIdx = userIdx;
-      }
+      values.userIdx = userIdx;
       if (dateCompleted) {
         values.dateCompleted = dateCompleted;
       }

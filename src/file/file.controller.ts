@@ -5,6 +5,7 @@ import {
   Header,
   Param,
   Post,
+  Req,
   Res,
   UploadedFile,
   UseGuards,
@@ -12,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { FileService } from './file.service';
 import { multerOptionFactory } from './multer.option';
 
@@ -53,13 +54,15 @@ export class FileController {
   @UseGuards(AuthGuard('jwt'))
   @Post('profile')
   @UseInterceptors(FileInterceptor('profile'))
-  uploadProfile(@UploadedFile() file: Express.MulterS3.File) {
-    return this.fileService.uploadProfile(file);
+  uploadProfile(@UploadedFile() file: Express.MulterS3.File, @Req() req: Request) {
+    const { userIdx } = req.user as any;
+    return this.fileService.uploadProfile(file, userIdx);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Delete('profile/:fileName')
-  deleteProfile(@Param('fileName') fileName: string) {
-    return this.fileService.deleteProfile(fileName);
+  deleteProfile(@Param('fileName') fileName: string, @Req() req: Request) {
+    const { userIdx } = req.user as any;
+    return this.fileService.deleteProfile(fileName, userIdx);
   }
 }
