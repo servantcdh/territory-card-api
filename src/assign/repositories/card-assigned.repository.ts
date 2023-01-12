@@ -1,7 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PageRequestDto } from 'src/shared/dto/page-request.dto';
 import { DataSource, Repository } from 'typeorm';
-import { CreateAssignedCardDto } from '../dto/create-assigned-card.dto';
 import { GetAssignedCardDto } from '../dto/get-assigned-card.dto';
 import { UpdateAssignedCardDto } from '../dto/update-assigned-card.dto';
 import { CardAssigned } from '../entities/card-assigned.entity';
@@ -40,6 +39,7 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
     .leftJoinAndSelect('crewAssigned.user', 'user')
     .leftJoinAndSelect('user.access', 'access')
+    .leftJoinAndSelect('cardAssigned.cardRecord', 'cardRecord')
     .where('cardAssigned.dateCompleted IS NULL');
     return qb.take(dto.getLimit()).skip(dto.getOffset()).getMany();
   }
