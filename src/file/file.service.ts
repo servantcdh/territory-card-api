@@ -178,7 +178,7 @@ export class FileService {
     const dto = new UpdateUserDto();
     dto.userIdx = userIdx;
     dto.profile = filePath;
-    this.userRepository.updateUser(dto);
+    this.userRepository.updateUserProfile(dto);
 
     return { filePath };
   }
@@ -189,7 +189,7 @@ export class FileService {
     const dto = new UpdateUserDto();
     dto.userIdx = userIdx;
     dto.profile = null;
-    this.userRepository.updateUser(dto);
+    this.userRepository.updateUserProfile(dto);
 
     return deleteFile(this.configService, key);
   }
