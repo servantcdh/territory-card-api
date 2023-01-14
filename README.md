@@ -14,7 +14,7 @@ TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세
 
 ## 이번 목표
 
-- EC2 도메인 연결
+- EC2 도메인연결(가비아+Route53) 및 SSL(ELB) 적용
 - cors origin whitelist 추가
 
 ## 사용한 라이브러리
@@ -51,11 +51,17 @@ TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세
 
 ## 특이 사항
 
-아직은 없습니다.
+1. 가비아 네임서버를 AWS Route 53의 호스팅 영역 세부 정보에 있는 네임서버로 수정한다.
+
+2. ELB 설정 전 Target Group를 생성할 때 EC2에서 사용하는 포트를 입력해주어야 한다.
+
+3. ELB 리스너 중 HTTP:80를 HTTPS:443 리다이렉트 시키도록 Edit한다.
+
+4. 위의 네 가지를 하지못해 이틀을 고생했다. 이번 경험으로 EC2, S3, CloudFront, ELB, Route 53, Certificate Manager 등 많은 기능들을 사용할 수 있게 되었다. 큰 수확이다.
 
 ## 참고한 곳
 
-[EC2 HTTPS로 연결하기 - server30sopt](https://velog.io/@server30sopt/EC2-HTTPS%EB%A1%9C-%EC%97%B0%EA%B2%B0%ED%95%98%EA%B8%B0)
+[[AWS] EC2 도메인 연결 및 HTTPS 적용하기 - PgmJUN](https://pgmjun.tistory.com/69)
 
 [How to enable CORS for multiple domains in Nest.js - Nandu Singh, morioh.com](https://morioh.com/p/bad87f42e5dd)
 
