@@ -14,7 +14,7 @@ TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세
 
 ## 이번 목표
 
-- `web push` 발송을 구현한다.
+- EC2 도메인 연결
 
 ## 사용한 라이브러리
 
@@ -54,19 +54,7 @@ TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세
 
 ## 참고한 곳
 
-[AWS 프리티어: NDS Tech Blog](https://tech.cloud.nongshim.co.kr/2018/10/10/aws-프리티어free-tier-서비스/)
-
-[AWS S3 & CloudFront: 요즘IT](https://yozm.wishket.com/magazine/detail/1360/)
-
-[Nestjs 파일 업로드: Kkiri Blog](https://devkkiri.com/post/96bdd7e2-3328-4450-8e54-332cd90d4066)
-
-[AWS CloudFront와 S3 연결하기: earth-95님의 티블로그](https://earth-95.tistory.com/m/128)
-
-[Nestjs Athentication: Nestjs](https://docs.nestjs.com/security/authentication)
-
-[Nestjs+TypeORM/QueryBuilder를 사용해야하는 이유: 25gstory.log](https://velog.io/@fj2008/NestjsTypeORM-QueryBuilder를-사용해야-하는-이유)
-
-[Nestjs+TypeORM/Pagination: outclass.log](https://velog.io/@outclassstudio/NestJS-TypeORM-Pagination)
+[[AWS] EC2 와 도메인 연결하기 (feat. 가비아) - developer-ping9](https://developer-ping9.tistory.com/320)
 
 ## 만든이
 
