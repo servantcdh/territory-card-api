@@ -15,6 +15,7 @@ TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세
 ## 이번 목표
 
 - EC2 도메인 연결
+- cors origin whitelist 추가
 
 ## 사용한 라이브러리
 
@@ -55,6 +56,8 @@ TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세
 ## 참고한 곳
 
 [[AWS] EC2 와 도메인 연결하기 (feat. 가비아) - developer-ping9](https://developer-ping9.tistory.com/320)
+
+[How to enable CORS for multiple domains in Nest.js - Nandu Singh, morioh.com](https://morioh.com/p/bad87f42e5dd)
 
 ## 만든이
 
