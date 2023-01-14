@@ -4,7 +4,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 
-const whitelist = ['https://www.jwterritory.co.kr', 'http://localhost:4200'];
+const whitelist = [
+  'https://www.jwterritory.co.kr',
+  'https://jwterritory.co.kr',
+  'http://localhost:4200',
+];
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,9 +27,9 @@ async function bootstrap() {
         console.log(origin);
       }
       if (!origin || whitelist.indexOf(origin) !== -1) {
-        callback(null, true)
+        callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'))
+        callback(new Error('Not allowed by CORS'));
       }
     },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
