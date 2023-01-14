@@ -19,6 +19,7 @@ async function bootstrap() {
   const port = configService.get('port');
   app.enableCors({
     origin: function (origin, callback) {
+      console.log(origin);
       if (!origin || whitelist.indexOf(origin) !== -1) {
         callback(null, true)
       } else {

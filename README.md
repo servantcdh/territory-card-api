@@ -55,7 +55,7 @@ TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세
 
 ## 참고한 곳
 
-[[AWS] EC2 와 도메인 연결하기 (feat. 가비아) - developer-ping9](https://developer-ping9.tistory.com/320)
+[AWS EC2 서버에 도메인 적용과 SSL 인증서 적용하기 - tre2man](https://tre2man.tistory.com/266)
 
 [How to enable CORS for multiple domains in Nest.js - Nandu Singh, morioh.com](https://morioh.com/p/bad87f42e5dd)
 
