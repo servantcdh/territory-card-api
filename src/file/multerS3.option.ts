@@ -40,7 +40,7 @@ export const multerOptionFactory = (
       key(_req, file, done) {
         const ext = path.extname(file.originalname);
         const basename = path.basename(file.originalname, ext);
-        done(null, `profile/${basename}_${Date.now()}${ext}`);
+        done(null, `data/${basename}_${Date.now()}${ext}`);
       },
     }),
     limits: {

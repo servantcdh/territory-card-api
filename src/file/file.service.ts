@@ -184,7 +184,7 @@ export class FileService {
   }
 
   deleteProfile(fileName: string, userIdx: number) {
-    const key = `profile/${fileName}`;
+    const key = `data/${fileName}`;
 
     const dto = new UpdateUserDto();
     dto.userIdx = userIdx;
