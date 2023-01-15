@@ -7,6 +7,7 @@ import * as cookieParser from 'cookie-parser';
 const whitelist = [
   'https://www.jwterritory.co.kr',
   'https://jwterritory.co.kr',
+  'https://d2p8x9l68uerzw.cloudfront.net', 
   'http://localhost:4200',
 ];
 
