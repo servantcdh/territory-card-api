@@ -53,7 +53,10 @@ export class CardRepository extends Repository<Card> {
       });
     }
     qb = qb.orderBy("cardAssigned.dateCompleted");
-    return qb.take(dto.getLimit()).skip(dto.getOffset()).getMany();
+    if (dto.pageSize) {
+      qb = qb.take(dto.getLimit()).skip(dto.getOffset());
+    }
+    return qb.getMany();
   }
 
   async createCard(cardDto: CreateCardDto) {

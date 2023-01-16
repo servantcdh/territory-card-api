@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PageRequestDto } from 'src/shared/dto/page-request.dto';
-import { DataSource, Repository } from 'typeorm';
+import { Brackets, DataSource, Repository } from 'typeorm';
 import { GetAssignedCardDto } from '../dto/get-assigned-card.dto';
 import { UpdateAssignedCardDto } from '../dto/update-assigned-card.dto';
 import { CardAssigned } from '../entities/card-assigned.entity';
@@ -41,7 +41,10 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     .leftJoinAndSelect('user.access', 'access')
     .leftJoinAndSelect('cardAssigned.cardRecord', 'cardRecord')
     .where('cardAssigned.dateCompleted IS NULL');
-    return qb.take(dto.getLimit()).skip(dto.getOffset()).getMany();
+    if (dto.pageSize) {
+      qb = qb.take(dto.getLimit()).skip(dto.getOffset());
+    }
+    return qb.getMany();
   }
 
   async getManyToMe(dto: GetAssignedCardDto): Promise<CardAssigned[]> {
@@ -59,13 +62,16 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     let qb = this.createQueryBuilder('cardAssigned')
     .leftJoinAndSelect('cardAssigned.card', 'card')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
-    .leftJoinAndSelect('crewAssigned.user', 'user');
-    data.forEach(({ idx }, index) => {
-      const key = `idx${index}`;
-      const parameter: any = {};
-      parameter[key] = idx;
-      qb = qb.orWhere(`cardAssigned.idx = :${key}`, parameter);
-    });
+    .leftJoinAndSelect('crewAssigned.user', 'user')
+    .where('cardAssigned.dateCompleted IS NULL')
+    .andWhere(new Brackets((q) => {
+      data.forEach(({ idx }, i) => {
+        const key = `idx${i}`;
+        const parameter: any = {};
+        parameter[key] = idx;
+        q.orWhere(`cardAssigned.idx = :${key}`, parameter);
+      });
+    }));
     return qb.getMany();
   }
 
