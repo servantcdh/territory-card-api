@@ -52,17 +52,21 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
     .where('cardAssigned.dateCompleted IS NULL')
     .andWhere('crewAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
-    .getOne();
+    .getMany();
     if (!data) {
       return [];
     }
-    const { idx } = data;
-    return this.createQueryBuilder('cardAssigned')
+    let qb = this.createQueryBuilder('cardAssigned')
     .leftJoinAndSelect('cardAssigned.card', 'card')
     .leftJoinAndSelect('cardAssigned.crewAssigned', 'crewAssigned')
-    .leftJoinAndSelect('crewAssigned.user', 'user')
-    .where('cardAssigned.idx = :idx', { idx })
-    .getMany();
+    .leftJoinAndSelect('crewAssigned.user', 'user');
+    data.forEach(({ idx }, index) => {
+      const key = `idx${index}`;
+      const parameter: any = {};
+      parameter[key] = idx;
+      qb = qb.orWhere(`cardAssigned.idx = :${key}`, parameter);
+    });
+    return qb.getMany();
   }
 
   async createAssignedCard(dto: { cardIdx: number }[]) {
