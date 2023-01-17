@@ -56,7 +56,7 @@ export class CardAssignedRepository extends Repository<CardAssigned> {
     .where('cardAssigned.dateCompleted IS NULL')
     .andWhere('crewAssigned.userIdx = :userIdx', { userIdx: dto.userIdx })
     .getMany();
-    if (!data) {
+    if (!data.length) {
       return [];
     }
     let qb = this.createQueryBuilder('cardAssigned')

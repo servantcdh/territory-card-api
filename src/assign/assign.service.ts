@@ -20,6 +20,7 @@ import { GetAssignedCardDto } from './dto/get-assigned-card.dto';
 import { UpdateAssignedCardDto } from './dto/update-assigned-card.dto';
 import { CardAssignedRepository } from './repositories/card-assigned.repository';
 import { CrewAssignedRepository } from './repositories/crew-assigned.repository';
+import * as FCM from 'fcm-node';
 
 @Injectable()
 export class AssignService {
@@ -164,7 +165,7 @@ export class AssignService {
   async assignCrew(dto: CreateAssignedCrewDto) {
     // 배정된 전도인 리스트 불러오기
     // 비교해서 일치시키기
-    const { cardAssignedIdx, userIdxes } = dto;
+    const { cardAssignedIdx, userIdxes, pushTokens } = dto;
     const crewsAssigned = await this.crewAssignedRepository.getAssignedCrew(
       cardAssignedIdx,
     );
@@ -190,5 +191,10 @@ export class AssignService {
       ? await this.crewAssignedRepository.assignCrew(insertDto)
       : 0;
     return { affected, identifiers };
+  }
+
+  sendPush() {
+    const fcm = new FCM(process.env.FCM_API_KEY);
+    console.log(fcm);
   }
 }

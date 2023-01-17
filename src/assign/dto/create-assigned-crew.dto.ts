@@ -1,4 +1,4 @@
-import { IsArray, IsNumber } from 'class-validator';
+import { IsArray, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateAssignedCrewDto {
   @IsNumber()
@@ -6,4 +6,8 @@ export class CreateAssignedCrewDto {
 
   @IsArray()
   userIdxes: number[];
+
+  @IsOptional()
+  @IsArray()
+  pushTokens: string[];
 }
