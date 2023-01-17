@@ -11,5 +11,8 @@ export class CreateAccessDto {
   @IsString()
   refreshToken: string;
 
+  @IsString()
+  pushToken: string;
+
   user: User;
 }

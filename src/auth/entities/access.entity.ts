@@ -20,6 +20,14 @@ export class Access {
   })
   refreshToken: string;
 
+  @Column({
+    type: 'varchar',
+    length: 300,
+    nullable: true,
+    comment: 'FCM 토큰',
+  })
+  pushToken: string;
+
   @OneToOne(() => User)
   @JoinColumn()
   user: User;

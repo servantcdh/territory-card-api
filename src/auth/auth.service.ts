@@ -53,6 +53,7 @@ export class AuthService {
         car: false,
         live: false,
         refreshToken: accessDto.refreshToken,
+        pushToken: accessDto.pushToken,
         user: accessDto.user,
       };
       const accessIdx = await this.authRepository.createAccess(createAccessDto);
