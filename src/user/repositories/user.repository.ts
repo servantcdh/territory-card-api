@@ -26,6 +26,7 @@ export class UserRepository extends Repository<User> {
         'status',
         'car',
         'live',
+        'pushToken',
         'user.idx AS userIdx',
       ])
       .from(User, 'user')
