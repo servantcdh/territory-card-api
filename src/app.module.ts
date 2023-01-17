@@ -26,6 +26,7 @@ import { TerritoryRecord } from './record/entities/territory-record.entity';
 import { TerritoryRecordContent } from './record/entities/territory-record-content.entity';
 import { FileModule } from './file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { FirebaseService } from './shared/services/firebase/firebase.service';
 
 @Module({
   imports: [
@@ -81,6 +82,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     FileModule,
   ],
   controllers: [AppController], // express.router
-  providers: [AppService],
+  providers: [AppService, FirebaseService],
 })
 export class AppModule {}

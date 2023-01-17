@@ -12,6 +12,7 @@ import { CardRecordRepository } from 'src/record/repositories/card-record.reposi
 import { TerritoryRecordContentRepository } from 'src/record/repositories/territory-record-content.repository';
 import { TerritoryRecordRepository } from 'src/record/repositories/territory-record.repository';
 import { PageRequestDto } from 'src/shared/dto/page-request.dto';
+import { FirebaseService } from 'src/shared/services/firebase/firebase.service';
 import { GetUserDto } from 'src/user/dto/get-user.dto';
 import { UserRepository } from 'src/user/repositories/user.repository';
 import { CreateAssignedCardDto } from './dto/create-assigned-card.dto';
@@ -20,7 +21,6 @@ import { GetAssignedCardDto } from './dto/get-assigned-card.dto';
 import { UpdateAssignedCardDto } from './dto/update-assigned-card.dto';
 import { CardAssignedRepository } from './repositories/card-assigned.repository';
 import { CrewAssignedRepository } from './repositories/crew-assigned.repository';
-import * as FCM from 'fcm-node';
 
 @Injectable()
 export class AssignService {
@@ -31,6 +31,7 @@ export class AssignService {
     private readonly territoryRecordRepository: TerritoryRecordRepository,
     private readonly territoryRecordContentRepository: TerritoryRecordContentRepository,
     private readonly userRepository: UserRepository,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   getOne(assignedCardIdx: number) {
@@ -70,7 +71,9 @@ export class AssignService {
       throw new BadRequestException('완료된 카드는 수정 불가');
     }
     if (dto.userIdx) {
-      const crewAssignedUserIdx = assignedCard.crewAssigned.map((c) => c.userIdx);
+      const crewAssignedUserIdx = assignedCard.crewAssigned.map(
+        (c) => c.userIdx,
+      );
       if (!crewAssignedUserIdx.includes(dto.userIdx)) {
         throw new BadRequestException('배정된 전도인이어야 함');
       }
@@ -190,11 +193,16 @@ export class AssignService {
     const identifiers = insertDto.length
       ? await this.crewAssignedRepository.assignCrew(insertDto)
       : 0;
+    if (pushTokens.length) {
+      const cardAssigned = await this.getOne(cardAssignedIdx);
+      const { card, cardIdx } = cardAssigned;
+      const { name: cardName } = card;
+      this.firebaseService.sendPush(
+        pushTokens,
+        `구역카드가 배정되었습니다.`,
+        `구역번호${cardIdx}. ${cardName}`,
+      );
+    }
     return { affected, identifiers };
-  }
-
-  sendPush() {
-    const fcm = new FCM(process.env.FCM_API_KEY);
-    console.log(fcm);
   }
 }

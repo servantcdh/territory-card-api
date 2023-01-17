@@ -7,6 +7,7 @@ import { TerritoryRecord } from 'src/record/entities/territory-record.entity';
 import { CardRecordRepository } from 'src/record/repositories/card-record.repository';
 import { TerritoryRecordContentRepository } from 'src/record/repositories/territory-record-content.repository';
 import { TerritoryRecordRepository } from 'src/record/repositories/territory-record.repository';
+import { FirebaseService } from 'src/shared/services/firebase/firebase.service';
 import { User } from 'src/user/entities/user.entity';
 import { UserRepository } from 'src/user/repositories/user.repository';
 import { AssignController } from './assign.controller';
@@ -37,6 +38,7 @@ import { CrewAssignedRepository } from './repositories/crew-assigned.repository'
     TerritoryRecordRepository,
     TerritoryRecordContentRepository,
     UserRepository,
+    FirebaseService
   ],
 })
 export class AssignModule {}
