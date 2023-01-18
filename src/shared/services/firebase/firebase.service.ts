@@ -11,8 +11,8 @@ export class FirebaseService {
 
   sendPush(pushTokens: string[], title: string, body: string) {
     return admin.messaging().sendToDevice(pushTokens, {
-      notification: { title, body, icon: 'android-chrome-512x512.png', },
-      data: { title, body, icon: 'android-chrome-512x512.png' },
+      notification: { title, body, icon: './android-chrome-512x512.png', },
+      data: { title, body, icon: './android-chrome-512x512.png' },
     });
   }
 }
