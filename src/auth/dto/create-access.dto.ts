@@ -1,4 +1,4 @@
-import { IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { User } from 'src/user/entities/user.entity';
 
 export class CreateAccessDto {
@@ -11,6 +11,7 @@ export class CreateAccessDto {
   @IsString()
   refreshToken: string;
 
+  @IsOptional()
   @IsString()
   pushToken: string;
 
