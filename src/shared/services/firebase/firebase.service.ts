@@ -11,7 +11,7 @@ export class FirebaseService {
 
   sendPush(pushTokens: string[], title: string, body: string) {
     return admin.messaging().sendToDevice(pushTokens, {
-      notification: { title, body },
+      data: { title, body },
     });
   }
 }
