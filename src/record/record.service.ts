@@ -32,7 +32,7 @@ export class RecordService {
     dto.crewAssignedIdx = idx;
     const affected = await this.cardRecordRepository.updateCardRecord(dto);
     if (!affected) {
-      return this.cardRecordRepository.createCardRecord(dto);
+      this.cardRecordRepository.createCardRecord(dto);
     }
     const { idx: refusalMarkIdx } = await this.cardMarkRepository.getOneByMarkName('방문거절');
     const isRefusal = dto.cardMarkIdx === refusalMarkIdx
@@ -41,9 +41,6 @@ export class RecordService {
       refusal: isRefusal
     };
     this.cardContentRepository.updateCardContentRefusal(updateCardContentDto);
-    if (dto.cardMarkIdx === refusalMarkIdx) {
-
-    }
     return affected;
   }
 
