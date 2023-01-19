@@ -10,31 +10,22 @@ export class FirebaseService {
   constructor() {}
 
   sendPush(pushTokens: string[], title: string, body: string) {
-    const push = {
-      data: { icon: './android-chrome-512x512.png' },
-      token: '',
-      android: {
-        notification: {
-          color: '#facc15'
-        }
-      },
+    return admin.messaging().sendMulticast({
+      tokens: pushTokens,
       notification: {
         title,
         body,
       },
       webpush: {
-        headers: {
-          image: 'https://www.jwterritory.co.kr/android-chrome-512x512.png'
+        notification: {
+          title,
+          body,
+          icon: 'https://www.jwterritory.co.kr/android-chrome-512x512.png',
         },
         fcmOptions: {
           link: 'https://www.jwterritory.co.kr',
         },
       },
-    };
-    return admin.messaging().sendAll(pushTokens.map((token) => ({ ...push, token })));
-    // return admin.messaging().sendToDevice(pushTokens, {
-    //   notification: { title, body, icon: './android-chrome-512x512.png' },
-    //   data: { title, body, icon: './android-chrome-512x512.png' },
-    // });
+    });
   }
 }
