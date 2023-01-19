@@ -13,11 +13,19 @@ export class FirebaseService {
     const push = {
       data: { icon: './android-chrome-512x512.png' },
       token: '',
+      android: {
+        notification: {
+          color: '#facc15'
+        }
+      },
       notification: {
         title,
         body,
       },
       webpush: {
+        headers: {
+          image: 'https://www.jwterritory.co.kr/android-chrome-512x512.png'
+        },
         fcmOptions: {
           link: 'https://www.jwterritory.co.kr',
         },
