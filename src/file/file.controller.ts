@@ -8,11 +8,12 @@ import {
   Req,
   Res,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
 import { FileService } from './file.service';
 import { multerOptionFactory } from './multer.option';
@@ -35,9 +36,9 @@ export class FileController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('card')
-  @UseInterceptors(FileInterceptor('excel', multerOptionFactory()))
-  uploadCardByExcel(@UploadedFile() file: Express.Multer.File) {
-    return this.fileService.parseAndCreateCard(file);
+  @UseInterceptors(FilesInterceptor('excel', 0, multerOptionFactory()))
+  uploadCardByExcel(@UploadedFiles() files: Array<Express.Multer.File>) {
+    return this.fileService.createCards(files);
   }
 
   @Header(

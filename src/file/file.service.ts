@@ -60,6 +60,12 @@ export class FileService {
     getCardForm(res, [card, cardContent]);
   }
 
+  async createCards(files: Array<Express.Multer.File>) {
+    for (const file of files) {
+      await this.parseAndCreateCard(file);
+    }
+  }
+
   async parseAndCreateCard(file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('엑셀 파일이 업로드되지 않음');
