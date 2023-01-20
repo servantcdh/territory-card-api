@@ -36,7 +36,7 @@ export class FileController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('card')
-  @UseInterceptors(FilesInterceptor('excel', 0, multerOptionFactory()))
+  @UseInterceptors(FilesInterceptor('excel', undefined, multerOptionFactory()))
   uploadCardByExcel(@UploadedFiles() files: Array<Express.Multer.File>) {
     return this.fileService.createCards(files);
   }
