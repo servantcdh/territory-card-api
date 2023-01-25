@@ -47,7 +47,7 @@ TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세
 | @types/multer-s3      | _^3.0.0_   | multer-s3 typescript d.ts 제공                                    |
 | cookie-parser         | _^1.4.6_   | express cookie 조작 라이브러리                                    |
 | @types/cookie-parser  | _^1.4.3_   | cookie-parser typescript d.ts 제공                                |
-| fcm-node              | _^1.6.1_   | Firebase Cloud Message 발송 라이브러리                            |
+| firebase-admin        | _^11.4.1_  | Firebase Admin 라이브러리                                       |
 
 ## 특이 사항
 
