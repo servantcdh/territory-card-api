@@ -9,6 +9,7 @@ const whitelist = [
   'https://jwterritory.co.kr',
   'https://d2p8x9l68uerzw.cloudfront.net', 
   'http://localhost:4200',
+  'http://localhost:8888',
 ];
 
 async function bootstrap() {
