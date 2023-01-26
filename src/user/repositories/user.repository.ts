@@ -36,7 +36,7 @@ export class UserRepository extends Repository<User> {
         qb = qb.where('user.name REGEXP :name', { name: dto.name });
       }
       if (dto.orderBy) {
-        qb = qb.orderBy(`user.${dto.orderBy}`, !dto.desc ? 'ASC' : 'DESC');
+        qb = qb.orderBy('access.live', 'DESC').addOrderBy(`user.${dto.orderBy}`, !dto.desc ? 'ASC' : 'DESC');
       }
       if (dto.pageSize) {
         qb = qb.take(dto.getLimit()).skip(dto.getOffset());
