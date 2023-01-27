@@ -32,6 +32,9 @@ export class User {
   @Column({ type: 'bool', default: false, comment: '운전자 여부' })
   driver: boolean;
 
+  @Column({ type: 'bool', default: false, comment: '전시대 승인 여부' })
+  cart: boolean;
+
   @Column({
     type: 'varchar',
     length: 100,

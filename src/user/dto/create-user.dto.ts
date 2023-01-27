@@ -22,6 +22,9 @@ export class CreateUserDto {
   @IsBoolean()
   driver: boolean;
 
+  @IsBoolean()
+  cart: boolean;
+
   @IsOptional()
   @IsString()
   profile?: string;

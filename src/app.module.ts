@@ -27,6 +27,13 @@ import { TerritoryRecordContent } from './record/entities/territory-record-conte
 import { FileModule } from './file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { FirebaseService } from './shared/services/firebase/firebase.service';
+import { CartModule } from './cart/cart.module';
+import { CartDay } from './cart/entities/cart-day.entity';
+import { CartDayTime } from './cart/entities/cart-day-time.entity';
+import { CartDayTimeLocation } from './cart/entities/cart-day-time-location.entity';
+import { CartDayTimeUser } from './cart/entities/cart-day-time-user.entity';
+import { CartLocation } from './cart/entities/cart-location.entity';
+import { CartCrewAssigned } from './cart/entities/cart-crew-assigned.entity';
 
 @Module({
   imports: [
@@ -46,7 +53,7 @@ import { FirebaseService } from './shared/services/firebase/firebase.service';
       }),
     }),
     ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, '..', 'static')
+      rootPath: path.resolve(__dirname, '..', 'static'),
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -69,6 +76,12 @@ import { FirebaseService } from './shared/services/firebase/firebase.service';
         CardMark,
         TerritoryRecord,
         TerritoryRecordContent,
+        CartLocation,
+        CartDay,
+        CartDayTime,
+        CartDayTimeLocation,
+        CartDayTimeUser,
+        CartCrewAssigned,
       ],
       timezone: 'Asia/Seoul',
       logging: false,
@@ -80,6 +93,7 @@ import { FirebaseService } from './shared/services/firebase/firebase.service';
     RecordModule,
     AssignModule,
     FileModule,
+    CartModule,
   ],
   controllers: [AppController], // express.router
   providers: [AppService, FirebaseService],
