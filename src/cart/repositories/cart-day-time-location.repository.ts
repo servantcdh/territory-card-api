@@ -9,6 +9,19 @@ export class CartDayTimeLocationRepository extends Repository<CartDayTimeLocatio
     super(CartDayTimeLocation, dataSource.createEntityManager());
   }
 
+  getOne(idx: number): Promise<CartDayTimeLocation> {
+    return this.createQueryBuilder('cartDayTimeLocation')
+      .leftJoinAndSelect(
+        'cartDayTimeLocation.cartCrewAssigned',
+        'cartCrewAssigned',
+      )
+      .leftJoinAndSelect('cartCrewAssigned.cartDayTimeUser', 'cartDayTimeUser')
+      .leftJoinAndSelect('cartDayTimeLocation.cartDayTime', 'cartDayTime')
+      .leftJoinAndSelect('cartDayTimeLocation.cartLocation', 'cartLocation')
+      .where('cartDayTimeLocation.idx = :idx', { idx })
+      .getOne();
+  }
+
   async createTimeLocation(dto: CreateCartDayTimeLocationDto) {
     try {
       const { identifiers } = await this.dataSource

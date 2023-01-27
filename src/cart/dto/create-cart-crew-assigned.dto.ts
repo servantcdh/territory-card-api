@@ -5,7 +5,7 @@ export class CreateCartCrewAssignedDto {
   cartDayTimeLocationIdx: number;
 
   @IsArray()
-  cartDayTimeUserIdxes: number;
+  cartDayTimeUserIdxes: number[];
 
   @IsOptional()
   @IsArray()

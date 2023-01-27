@@ -166,8 +166,6 @@ export class AssignService {
   }
 
   async assignCrew(dto: CreateAssignedCrewDto) {
-    // 배정된 전도인 리스트 불러오기
-    // 비교해서 일치시키기
     const { cardAssignedIdx, userIdxes, pushTokens } = dto;
     const crewsAssigned = await this.crewAssignedRepository.getAssignedCrew(
       cardAssignedIdx,
@@ -192,7 +190,7 @@ export class AssignService {
       : 0;
     const identifiers = insertDto.length
       ? await this.crewAssignedRepository.assignCrew(insertDto)
-      : 0;
+      : [];
     if (pushTokens.length) {
       const cardAssigned = await this.getOne(cardAssignedIdx);
       const { card, cardIdx } = cardAssigned;

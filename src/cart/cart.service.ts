@@ -87,15 +87,54 @@ export class CartService {
 
   async assignCrew(dto: CreateCartCrewAssignedDto) {
     const { cartDayTimeLocationIdx, cartDayTimeUserIdxes, pushTokens } = dto;
-    // 배정된 전도인 리스트 불러오기
-    // 비교해서 일치시키기
-    // 푸시 발송
-    // const [{ idx: cartCrewAssignedIdx }] =
-    //   await this.cartCrewAssignedRepository.createCrew(dto);
-    // return this.cartDayTimeUserRepository.updateTimeUser({
-    //   cartDayTimeUserIdx: dto.cartDayTimeUserIdx,
-    //   cartCrewAssignedIdx,
-    // });
+    const { cartCrewAssigned, cartDayTime, cartLocation } =
+      await this.cartDayTimeLocationRepository.getOne(cartDayTimeLocationIdx);
+    const timeCrews = cartCrewAssigned.map(
+      (assigned) => assigned.cartDayTimeUserIdx,
+    );
+    const timeUserIdxesForDelete = timeCrews.filter(
+      (timeUserIdx) => !cartDayTimeUserIdxes.includes(timeUserIdx),
+    );
+    const timeUserIdxesForInsert = cartDayTimeUserIdxes.filter(
+      (timeUserIdx) => !timeCrews.includes(timeUserIdx),
+    );
+    const deleteDto = timeUserIdxesForDelete.map((cartDayTimeUserIdx) => ({
+      cartDayTimeLocationIdx,
+      cartDayTimeUserIdx,
+    }));
+    const insertDto = timeUserIdxesForInsert.map((cartDayTimeUserIdx) => ({
+      cartDayTimeLocationIdx,
+      cartDayTimeUserIdx,
+    }));
+    const affected = deleteDto.length
+      ? await this.cartCrewAssignedRepository.deleteCrew(deleteDto)
+      : 0;
+    const identifiers = insertDto.length
+      ? await this.cartCrewAssignedRepository.createCrew(insertDto)
+      : [];
+    timeUserIdxesForInsert.forEach((cartDayTimeUserIdx, index) => {
+      const { idx: cartCrewAssignedIdx } = identifiers[index];
+      this.cartDayTimeUserRepository.updateTimeUser({
+        cartDayTimeUserIdx,
+        cartCrewAssignedIdx,
+      });
+    });
+    timeUserIdxesForDelete.forEach((cartDayTimeUserIdx) => {
+      this.cartDayTimeUserRepository.updateTimeUser({
+        cartDayTimeUserIdx,
+        cartCrewAssignedIdx: null,
+      });
+    });
+    if (pushTokens.length) {
+      const { startTime, endTime } = cartDayTime;
+      const { name } = cartLocation;
+      this.firebaseService.sendPush(
+        pushTokens,
+        `전시대 봉사에 배정되었습니다.`,
+        `${name} ${startTime} ~ ${endTime}`,
+      );
+    }
+    return { affected, identifiers };
   }
 
   deleteCrews(cartDayTimeIdx: number) {
