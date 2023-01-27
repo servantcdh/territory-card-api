@@ -124,11 +124,11 @@ export class CartController {
     return this.cartService.assignCrew(dto);
   }
 
-  @Delete('plan/reset/:cartDayTimeLocationIdx')
+  @Delete('plan/reset/:cartDayTimeIdx')
   @UseGuards(AuthGuard('jwt'))
   deleteCrews(
-    @Param('cartDayTimeLocationIdx') cartDayTimeLocationIdx: number,
+    @Param('cartDayTimeIdx') cartDayTimeIdx: number,
   ) {
-    return this.cartService.deleteCrews(cartDayTimeLocationIdx);
+    return this.cartService.deleteCrews(cartDayTimeIdx);
   }
 }
