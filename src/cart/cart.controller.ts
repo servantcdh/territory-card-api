@@ -30,6 +30,12 @@ export class CartController {
     return this.cartService.getWeek(dto);
   }
 
+  @Get(':dayCode')
+  @UseGuards(AuthGuard('jwt'))
+  getDay(@Param('dayCode') dayCode: number) {
+    return this.cartService.getDay(dayCode);
+  }
+
   @Get('plan/:cartDayTimeIdx')
   @UseGuards(AuthGuard('jwt'))
   getTimePlan(@Param('cartDayTimeIdx') cartDayTimeIdx: number) {

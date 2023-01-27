@@ -31,6 +31,10 @@ export class CartService {
     return this.cartDayRepository.getMany(dto);
   }
 
+  getDay(dayCode: number) {
+    return this.cartDayRepository.getOne(dayCode);
+  }
+
   getTimePlan(cartDayTimeIdx: number) {
     return this.cartDayTimeRepository.getOne(cartDayTimeIdx);
   }
