@@ -85,23 +85,17 @@ export class CartService {
     return this.cartDayTimeUserRepository.deleteTimeUser(cartDayTimeUserIdx);
   }
 
-  async createCrew(dto: CreateCartCrewAssignedDto) {
-    // TODO 여러명
-    // TODO 푸시 발송
-    const [{ idx: cartCrewAssignedIdx }] =
-      await this.cartCrewAssignedRepository.createCrew(dto);
-    return this.cartDayTimeUserRepository.updateTimeUser({
-      cartDayTimeUserIdx: dto.cartDayTimeUserIdx,
-      cartCrewAssignedIdx,
-    });
-  }
-
-  deleteCrew(cartCrewAssignedIdx: number) {
-    // TODO 여러명
-    this.cartDayTimeUserRepository.updateTimeUserAssignNull(
-      cartCrewAssignedIdx,
-    );
-    return this.cartCrewAssignedRepository.deleteCrew(cartCrewAssignedIdx);
+  async assignCrew(dto: CreateCartCrewAssignedDto) {
+    const { cartDayTimeLocationIdx, cartDayTimeUserIdxes, pushTokens } = dto;
+    // 배정된 전도인 리스트 불러오기
+    // 비교해서 일치시키기
+    // 푸시 발송
+    // const [{ idx: cartCrewAssignedIdx }] =
+    //   await this.cartCrewAssignedRepository.createCrew(dto);
+    // return this.cartDayTimeUserRepository.updateTimeUser({
+    //   cartDayTimeUserIdx: dto.cartDayTimeUserIdx,
+    //   cartCrewAssignedIdx,
+    // });
   }
 
   deleteCrews(cartDayTimeIdx: number) {

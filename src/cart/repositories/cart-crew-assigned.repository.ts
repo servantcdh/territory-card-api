@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
-import { CreateCartCrewAssignedDto } from '../dto/create-cart-crew-assigned.dto';
+import { Brackets, DataSource, Repository } from 'typeorm';
 import { CartCrewAssigned } from '../entities/cart-crew-assigned.entity';
 
 @Injectable()
@@ -9,7 +8,9 @@ export class CartCrewAssignedRepository extends Repository<CartCrewAssigned> {
     super(CartCrewAssigned, dataSource.createEntityManager());
   }
 
-  async createCrew(dto: CreateCartCrewAssignedDto) {
+  async createCrew(
+    dto: { cartDayTimeLocationIdx: number; cartDayTimeUserIdx: number }[],
+  ) {
     try {
       const { identifiers } = await this.dataSource
         .createQueryBuilder()
@@ -23,13 +24,30 @@ export class CartCrewAssignedRepository extends Repository<CartCrewAssigned> {
     }
   }
 
-  async deleteCrew(cartCrewAssignedIdx: number) {
-    const { affected } = await this.dataSource
-      .createQueryBuilder()
-      .delete()
-      .from(CartCrewAssigned)
-      .where('idx = :idx', { idx: cartCrewAssignedIdx })
-      .execute();
-    return affected;
+  async deleteCrew(
+    dto: { cartDayTimeLocationIdx: number; cartDayTimeUserIdx: number }[],
+  ) {
+    try {
+      let qb = this.createQueryBuilder('cartCrewAssigned').delete();
+      dto.forEach((d, i) => {
+        const { cartDayTimeLocationIdx, cartDayTimeUserIdx } = d;
+        const params: any = {};
+        params[`cartDayTimeLocationIdx${i}`] = cartDayTimeLocationIdx;
+        params[`cartDayTimeUserIdx${i}`] = cartDayTimeUserIdx;
+        qb = qb.orWhere(
+          new Brackets((q) => {
+            q.orWhere(
+              `cartDayTimeLocationIdx = :cartDayTimeLocationIdx${i} AND cartDayTimeUserIdx = :cartDayTimeUserIdx${i}`,
+              params,
+            );
+          }),
+        );
+      });
+      const { affected } = await qb.execute();
+      return affected;
+    } catch (e) {
+      // console.log(e);
+      return 0;
+    }
   }
 }

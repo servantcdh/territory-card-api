@@ -114,16 +114,8 @@ export class CartController {
 
   @Post('plan/assign')
   @UseGuards(AuthGuard('jwt'))
-  createCrew(@Body() dto: CreateCartCrewAssignedDto) {
-    return this.cartService.createCrew(dto);
-  }
-
-  @Delete('plan/assign/:cartCrewAssignedIdx')
-  @UseGuards(AuthGuard('jwt'))
-  deleteCrew(
-    @Param('cartCrewAssignedIdx') cartCrewAssignedIdx: number,
-  ) {
-    return this.cartService.deleteCrew(cartCrewAssignedIdx);
+  assignCrew(@Body() dto: CreateCartCrewAssignedDto) {
+    return this.cartService.assignCrew(dto);
   }
 
   @Delete('plan/reset/:cartDayTimeLocationIdx')

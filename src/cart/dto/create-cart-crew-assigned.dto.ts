@@ -1,9 +1,13 @@
-import { IsNumber } from 'class-validator';
+import { IsArray, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateCartCrewAssignedDto {
   @IsNumber()
   cartDayTimeLocationIdx: number;
 
-  @IsNumber()
-  cartDayTimeUserIdx: number;
+  @IsArray()
+  cartDayTimeUserIdxes: number;
+
+  @IsOptional()
+  @IsArray()
+  pushTokens: string[];
 }
