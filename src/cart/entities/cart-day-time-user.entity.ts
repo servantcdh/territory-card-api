@@ -24,9 +24,11 @@ export class CartDayTimeUser {
   })
   user: User;
 
-  @Column({ type: 'int', comment: 'cartCrewAssigned.idx' })
+  @Column({ type: 'int', nullable: true, comment: 'cartCrewAssigned.idx' })
   cartCrewAssignedIdx: number;
 
-  @OneToOne(() => CartCrewAssigned)
+  @OneToOne(() => CartCrewAssigned, {
+    onDelete: 'CASCADE',
+  })
   cartCrewAssigned: CartCrewAssigned;
 }

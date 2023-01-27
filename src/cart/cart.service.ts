@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PageRequestDto } from 'src/shared/dto/page-request.dto';
+import { FirebaseService } from 'src/shared/services/firebase/firebase.service';
 import { CreateCartCrewAssignedDto } from './dto/create-cart-crew-assigned.dto';
 import { CreateCartDayTimeLocationDto } from './dto/create-cart-day-time-location.dto';
 import { CreateCartDayTimeUserDto } from './dto/create-cart-day-time-user.dto';
@@ -23,6 +24,7 @@ export class CartService {
     private readonly cartDayTimeLocationRepository: CartDayTimeLocationRepository,
     private readonly cartDayTimeUserRepository: CartDayTimeUserRepository,
     private readonly cartCrewAssignedRepository: CartCrewAssignedRepository,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   getWeek(dto: PageRequestDto) {
@@ -83,11 +85,26 @@ export class CartService {
     return this.cartDayTimeUserRepository.deleteTimeUser(cartDayTimeUserIdx);
   }
 
-  createCrew(dto: CreateCartCrewAssignedDto) {
-    return this.cartCrewAssignedRepository.createCrew(dto);
+  async createCrew(dto: CreateCartCrewAssignedDto) {
+    // TODO 여러명
+    // TODO 푸시 발송
+    const [{ idx: cartCrewAssignedIdx }] =
+      await this.cartCrewAssignedRepository.createCrew(dto);
+    return this.cartDayTimeUserRepository.updateTimeUser({
+      cartDayTimeUserIdx: dto.cartDayTimeUserIdx,
+      cartCrewAssignedIdx,
+    });
   }
 
   deleteCrew(cartCrewAssignedIdx: number) {
+    // TODO 여러명
+    this.cartDayTimeUserRepository.updateTimeUserAssignNull(
+      cartCrewAssignedIdx,
+    );
     return this.cartCrewAssignedRepository.deleteCrew(cartCrewAssignedIdx);
+  }
+
+  deleteCrews(cartDayTimeIdx: number) {
+    return this.cartDayTimeUserRepository.deleteTimeUsers(cartDayTimeIdx);
   }
 }

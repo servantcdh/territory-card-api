@@ -16,12 +16,19 @@ export class CartDayTimeRepository extends Repository<CartDayTime> {
         'cartDayTime.cartDayTimeLocation',
         'cartDayTimeLocation',
       )
-      .leftJoinAndSelect('cartDayTimeLocation.cartCrewAssigned', 'cartCrewAssigned')
+      .leftJoinAndSelect(
+        'cartDayTimeLocation.cartCrewAssigned',
+        'cartCrewAssigned',
+      )
       .leftJoinAndSelect('cartCrewAssigned.cartDayTimeUser', 'crew')
       .leftJoinAndSelect('crew.user', 'crewInfo')
       .leftJoinAndSelect('crewInfo.access', 'crewAccess')
       .leftJoinAndSelect('cartDayTimeLocation.cartLocation', 'cartLocation')
-      .leftJoinAndSelect('cartDayTime.cartDayTimeUser', 'cartDayTimeUser')
+      .leftJoinAndSelect(
+        'cartDayTime.cartDayTimeUser',
+        'cartDayTimeUser',
+        'cartDayTimeUser.cartCrewAssignedIdx IS NULL',
+      )
       .leftJoinAndSelect('cartDayTimeUser.user', 'user')
       .leftJoinAndSelect('user.access', 'access')
       .where('cartDayTime.idx = :cartDayTimeIdx', { cartDayTimeIdx })

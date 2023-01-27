@@ -16,6 +16,7 @@ import { CartDayTimeLocationRepository } from './repositories/cart-day-time-loca
 import { CartDayTimeUserRepository } from './repositories/cart-day-time-user.repository';
 import { CartCrewAssigned } from './entities/cart-crew-assigned.entity';
 import { CartCrewAssignedRepository } from './repositories/cart-crew-assigned.repository';
+import { FirebaseService } from 'src/shared/services/firebase/firebase.service';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { CartCrewAssignedRepository } from './repositories/cart-crew-assigned.re
     CartDayTimeLocationRepository,
     CartDayTimeUserRepository,
     CartCrewAssignedRepository,
+    FirebaseService,
   ],
 })
 export class CartModule {}
