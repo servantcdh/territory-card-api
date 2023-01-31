@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://www.jwterritory.co.kr/" target="blank"><img src="https://github.com/servantcdh/territory-card/blob/main/public/loading.gif?raw=true" width="200" alt="하늘수레버전 로딩화면" /></a>
+  <a href="https://www.jwterritory.co.kr/" target="blank"><img src="https://github.com/servantcdh/territory-card/blob/main/src/assets/imagesloading.gif?raw=true" width="200" alt="하늘수레버전 로딩화면" /></a>
 </p>
 
 ## TerritoryCard - 구역 카드 시스템
