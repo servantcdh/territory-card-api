@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://www.jwterritory.co.kr/" target="blank"><img src="https://github.com/servantcdh/territory-card/blob/main/public/loading.gif?raw=true" width="200" alt="하늘수레버전 로딩화면" /></a>
+</p>
+
 ## TerritoryCard - 구역 카드 시스템
 
 TerritoryCard는 성경 마태복음 28:19, 20의 그리스도의 명령과 1세기 그리스도인들의 본을 따르기 위해 노력하는 사람들을 위해 만든 봉사 구역 카드 관리 시스템입니다.
