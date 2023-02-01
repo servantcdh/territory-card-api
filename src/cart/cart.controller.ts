@@ -30,12 +30,6 @@ export class CartController {
     return this.cartService.getWeek(dto);
   }
 
-  @Get(':dayCode')
-  @UseGuards(AuthGuard('jwt'))
-  getDay(@Param('dayCode') dayCode: number) {
-    return this.cartService.getDay(dayCode);
-  }
-
   @Get('plan/:cartDayTimeIdx')
   @UseGuards(AuthGuard('jwt'))
   getTimePlan(@Param('cartDayTimeIdx') cartDayTimeIdx: number) {
@@ -112,9 +106,7 @@ export class CartController {
 
   @Delete('plan/user/:cartDayTimeUserIdx')
   @UseGuards(AuthGuard('jwt'))
-  deleteTimeUser(
-    @Param('cartDayTimeUserIdx') cartDayTimeUserIdx: number,
-  ) {
+  deleteTimeUser(@Param('cartDayTimeUserIdx') cartDayTimeUserIdx: number) {
     return this.cartService.deleteTimeUser(cartDayTimeUserIdx);
   }
 
@@ -126,9 +118,13 @@ export class CartController {
 
   @Delete('plan/reset/:cartDayTimeIdx')
   @UseGuards(AuthGuard('jwt'))
-  deleteCrews(
-    @Param('cartDayTimeIdx') cartDayTimeIdx: number,
-  ) {
+  deleteCrews(@Param('cartDayTimeIdx') cartDayTimeIdx: number) {
     return this.cartService.deleteCrews(cartDayTimeIdx);
+  }
+
+  @Get(':dayCode')
+  @UseGuards(AuthGuard('jwt'))
+  getDay(@Param('dayCode') dayCode: number) {
+    return this.cartService.getDay(dayCode);
   }
 }
