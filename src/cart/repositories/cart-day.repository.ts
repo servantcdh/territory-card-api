@@ -40,6 +40,7 @@ export class CartDayRepository extends Repository<CartDay> {
       .leftJoinAndSelect('user.access', 'access')
       .where('cartDay.dayCode = :dayCode', { dayCode })
       .orderBy('cartDayTime.startTime', 'ASC')
+      .addOrderBy('user.name', 'ASC')
       .getOne();
   }
 }
