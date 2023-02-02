@@ -12,6 +12,13 @@ export class CartDayRepository extends Repository<CartDay> {
   getMany(dto: PageRequestDto): Promise<CartDay[]> {
     let qb = this.createQueryBuilder('cartDay')
       .leftJoinAndSelect('cartDay.cartDayTime', 'cartDayTime')
+      .leftJoinAndSelect(
+        'cartDayTime.cartDayTimeUser',
+        'cartDayTimeUser',
+        'cartDayTimeUser.cartCrewAssignedIdx IS NULL',
+      )
+      .leftJoinAndSelect('cartDayTimeUser.user', 'user')
+      .leftJoinAndSelect('user.access', 'access')
       .orderBy('cartDay.dayCode', 'ASC')
       .addOrderBy('cartDayTime.startTime', 'ASC');
     if (dto.pageSize) {
