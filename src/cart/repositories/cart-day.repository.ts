@@ -39,8 +39,7 @@ export class CartDayRepository extends Repository<CartDay> {
       .leftJoinAndSelect('cartDayTimeUser.user', 'user')
       .leftJoinAndSelect('user.access', 'access')
       .where('cartDay.dayCode = :dayCode', { dayCode })
-      .orderBy('cartDayTime.startTime', 'ASC')
-      .addOrderBy('user.name', 'ASC')
+      .orderBy('user.name', 'ASC')
       .getOne();
   }
 }
